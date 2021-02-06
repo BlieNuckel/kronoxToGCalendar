@@ -40,6 +40,7 @@ PATTERN2 = re.compile(",+")
 def main():
     service = creds()
     cal = event_edit()
+
     clearCalendar(service)
 
     open("calendar.ics", "wb").write(cal.to_ical())
@@ -58,7 +59,11 @@ def addEvents(service):
 
 
 def clearCalendar(service):
-    events = service.events().list(calendarId=CALENDAR_ID).execute()
+    events = (
+        service.events()
+        .list(calendarId=CALENDAR_ID, singleEvents=True)
+        .execute()
+    )
 
     batch = service.new_batch_http_request()
 
@@ -76,6 +81,12 @@ def event_edit():
     for i in cal.subcomponents:
         i["summary"] = name_format(i["summary"])
         editName = i["summary"]
+        editName = editName.replace("å", "a")
+        editName = editName.replace("ä", "a")
+        editName = editName.replace("ö", "o")
+        editName = editName.replace("Å", "A")
+        editName = editName.replace("Ä", "A")
+        editName = editName.replace("Ö", "O")
         editName = editName.replace(":  :", ":")
         editName = editName.rstrip(" : ")
         for j in PATTERN1.findall(i["summary"]):
