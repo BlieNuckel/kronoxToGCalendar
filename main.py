@@ -1,12 +1,8 @@
 import pickle
 import os.path
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
 from urllib import request
 import re
-from icalendar import Calendar
 from google.auth.transport.requests import Request
-from bs4 import BeautifulSoup
 from configparser import ConfigParser
 
 CONFIG_PATH = "config.ini"
@@ -15,6 +11,18 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 PATTERN1 = re.compile("\s+")
 PATTERN2 = re.compile(",+")
+
+if os.path.isfile(CONFIG_PATH):
+    os.system(
+        "pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+    )
+    os.system("pip install icalendar")
+    os.system("pip install beautifulsoup4")
+
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from icalendar import Calendar
+from bs4 import BeautifulSoup
 
 
 def main():
@@ -38,13 +46,6 @@ def configLoader():
         parser.read(CONFIG_PATH)
     else:
         with open(CONFIG_PATH, "w") as f:
-
-            os.system(
-                "pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
-            )
-            os.system("pip install icalendar")
-            os.system("pip install beautifulsoup4")
-
             calendarId = input("Enter Google Calendar ID: ")
             icalURL = input("Enter Kronox iCal file URL: ")
             lang = input(
