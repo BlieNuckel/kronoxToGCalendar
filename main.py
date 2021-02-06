@@ -39,6 +39,12 @@ def configLoader():
     else:
         with open(CONFIG_PATH, "w") as f:
 
+            os.system(
+                "pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+            )
+            os.system("pip install icalendar")
+            os.system("pip install beautifulsoup4")
+
             calendarId = input("Enter Google Calendar ID: ")
             icalURL = input("Enter ics file URL: ")
             lang = input(
