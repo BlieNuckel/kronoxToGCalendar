@@ -1,4 +1,3 @@
-leafrom __future__ import print_function
 import datetime
 import json
 import pickle
@@ -45,6 +44,10 @@ def main():
 
     open("calendar.ics", "wb").write(cal.to_ical())
 
+    addEvents(service)
+
+
+def addEvents(service):
     events = parse_ics("calendar.ics")
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
