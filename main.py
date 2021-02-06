@@ -11,21 +11,6 @@ from icalendar import Calendar
 from google.auth.transport.requests import Request
 from bs4 import BeautifulSoup
 
-# EXAMPLE OF EVENT STRUCTURE #
-# BEGIN:VEVENT
-# CREATED:20201111T070918Z
-# SEQUENCE:5
-# X-GWSHOW-AS:BUSY
-# DTSTAMP:20210205T014240Z
-# DTEND:20210205T143000Z
-# LAST-MODIFIED:20210108T150756Z
-# LOCATION:ZOOM
-# DTSTART:20210205T114500Z
-# STATUS:CONFIRMED
-# SUMMARY:Kurs.grp: Metoder för hållbar programmering Sign: NNA Moment: Workshop 1 (Grupp C) Program: TBSE2 2020 36 100 NML en
-# TRANSP:OPAQUE
-# UID:BokningsId_20201111_000000019
-# END:VEVENT
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 CALENDAR_ID = "ep55du49memdv685dupovlp6kk@group.calendar.google.com"
@@ -48,17 +33,19 @@ def main():
     addEvents(service)
 
 
-def addEvents(service):
-    events = parse_ics("calendar.ics")
+def addEvents(service):  # Adds each event from the ics file
+    events = parse_ics("calendar.ics")  # Parses file
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
 
+    # Add each event to batch
     for i, event in enumerate(events):
         batch.add(service.events().insert(calendarId=CALENDAR_ID, body=event))
     batch.execute()
 
 
-def clearCalendar(service):
+def clearCalendar(service):  # Clears calendar
+    # Get current available events
     events = (
         service.events()
         .list(calendarId=CALENDAR_ID, singleEvents=True)
@@ -67,6 +54,7 @@ def clearCalendar(service):
 
     batch = service.new_batch_http_request()
 
+    # Add delete call for each event to batch
     for event in events["items"]:
         eId = event["id"]
         batch.add(service.events().delete(calendarId=CALENDAR_ID, eventId=eId))
@@ -75,24 +63,23 @@ def clearCalendar(service):
 
 
 def event_edit():
+    # ics to Calendar object
     cal = Calendar.from_ical(ICAL_FILE)
 
-    del_events = []
-    for i in cal.subcomponents:
-        i["summary"] = name_format(i["summary"])
+    del_events = []  # List for events to be deleted
+    for i in cal.subcomponents:  # Loop through each event
+        i["summary"] = name_format(i["summary"])  # Format name
+
+        # Clean up the name
         editName = i["summary"]
-        editName = editName.replace("å", "a")
-        editName = editName.replace("ä", "a")
-        editName = editName.replace("ö", "o")
-        editName = editName.replace("Å", "A")
-        editName = editName.replace("Ä", "A")
-        editName = editName.replace("Ö", "O")
         editName = editName.replace(":  :", ":")
         editName = editName.rstrip(" : ")
         for j in PATTERN1.findall(i["summary"]):
             editName = editName.replace(j, " ")
         for j in PATTERN2.findall(i["summary"]):
             editName = editName.replace(j, ",")
+
+        # Add events that are Swedish classes to delete list
         if (
             "sv" in editName.lower()
             or "föreläsning" in editName.lower()
@@ -104,6 +91,7 @@ def event_edit():
             del_events.append(i)
         i["summary"] = editName
 
+    # Delete events from Calendar
     for i in del_events:
         cal.subcomponents.remove(i)
 
@@ -112,6 +100,7 @@ def event_edit():
 
 def name_format(name):
     split_name = None
+    # Split name and format SUMMARY in readable way
     if name[0] == "K":
         split_name = re.split("Kurs.grp: | Sign: | Moment: | Program: ", name)
         return split_name[1] + " : " + split_name[3] + " : " + split_name[2]
@@ -121,7 +110,7 @@ def name_format(name):
         return split_name[2] + " : " + split_name[1]
 
 
-def cb_insert_event(request_id, response, e):
+def cb_insert_event(request_id, response, e):  # Callback from adding events
     summary = (
         response["summary"] if response and "summary" in response else "?"
     )
@@ -131,7 +120,7 @@ def cb_insert_event(request_id, response, e):
         print("({}) - Exception {}".format(request_id, e))
 
 
-def parse_ics(ics):
+def parse_ics(ics):  # Parses ics file into list of event dicts
     events = []
     with open(ics, "r") as rf:
         ical = Calendar().from_ical(rf.read())
@@ -142,7 +131,12 @@ def parse_ics(ics):
                 for name, prop in comp.property_items():
 
                     if name in ["SUMMARY", "LOCATION"]:
-                        event[name.lower()] = prop.to_ical().decode("utf-8")
+                        event[name.lower()] = (
+                            prop.to_ical()
+                            .decode("utf-8")
+                            .encode("latin-1")
+                            .decode("utf-8")
+                        )
 
                     elif name == "DTSTART":
                         event["start"] = {
@@ -173,7 +167,12 @@ def parse_ics(ics):
                         }
 
                     elif name == "DESCRIPTION":
-                        desc = prop.to_ical().decode("utf-8")
+                        desc = (
+                            prop.to_ical()
+                            .decode("utf-8")
+                            .encode("latin-1")
+                            .decode("utf-8")
+                        )
                         desc = desc.replace(u"\xa0", u" ")
                         if name.lower() in event:
                             event[name.lower()] = (
