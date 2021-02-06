@@ -22,7 +22,7 @@ def main():
     calendar_id, ical_file, lang = configLoader()
 
     service = creds()
-    cal = event_edit(ical_file)
+    cal = event_edit(ical_file, lang)
 
     clearCalendar(service, calendar_id)
 
@@ -41,15 +41,13 @@ def configLoader():
 
             calendarId = input("Enter Google Calendar ID: ")
             icalURL = input("Enter ics file URL: ")
-            lang = input("Enter language of the classes you attend: ")
+            lang = input(
+                "Enter language of the classes you attend. Simply press enter if you wish to see all classes (en/sv): "
+            )
 
             parser.add_section("SETTINGS")
             parser.set("SETTINGS", "calendarId", calendarId)
             parser.set("SETTINGS", "icalURL", icalURL)
-            parser.set(
-                "SETTINGS",
-                "; Do not leave lang option empty, to get ALL classes (both eng and sv) enter: 0000",
-            )
             parser.set("SETTINGS", "language", lang)
             parser.write(f)
 
@@ -90,7 +88,7 @@ def clearCalendar(service, calendar_id):  # Clears calendar
     batch.execute()
 
 
-def event_edit(ical_file):
+def event_edit(ical_file, lang):
     # ics to Calendar object
     cal = Calendar.from_ical(ical_file)
 
@@ -107,16 +105,25 @@ def event_edit(ical_file):
         for j in PATTERN2.findall(i["summary"]):
             editName = editName.replace(j, ",")
 
-        # Add events that are Swedish classes to delete list
-        if (
-            "sv" in editName.lower()
-            or "föreläsning" in editName.lower()
-            and (
+        # NAZILA FIX: FILTERS ENGLISH OR SWEDISH CLASSES OUT #
+        if lang.lower() == "en":
+            if (
+                "sv" in editName.lower()
+                or "föreläsning" in editName.lower()
+                and (
+                    "tenta" not in editName.lower()
+                    and "guest" not in editName.lower()
+                )
+            ):
+                del_events.append(i)
+
+        elif lang.lower() == "sv":
+            if "eng" in editName.lower() and (
                 "tenta" not in editName.lower()
                 and "guest" not in editName.lower()
-            )
-        ):
-            del_events.append(i)
+            ):
+                del_events.append(i)
+
         i["summary"] = editName
 
     # Delete events from Calendar
