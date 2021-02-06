@@ -1,11 +1,8 @@
-import datetime
-import json
 import pickle
 import os.path
-from googleapiclient import http
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
-from urllib import parse, request
+from urllib import request
 import re
 from icalendar import Calendar
 from google.auth.transport.requests import Request
@@ -22,7 +19,7 @@ PATTERN2 = re.compile(",+")
 
 def main():
 
-    calendar_id, ical_file = configLoader()
+    calendar_id, ical_file, lang = configLoader()
 
     service = creds()
     cal = event_edit(ical_file)
@@ -35,7 +32,7 @@ def main():
 
 
 def configLoader():
-    parser = ConfigParser()
+    parser = ConfigParser(allow_no_value=True)
 
     if os.path.isfile(CONFIG_PATH):
         parser.read(CONFIG_PATH)
@@ -44,18 +41,24 @@ def configLoader():
 
             calendarId = input("Enter Google Calendar ID: ")
             icalURL = input("Enter ics file URL: ")
+            lang = input("Enter language of the classes you attend: ")
 
-            parser["DEFAULT"] = {
-                "calendarId": calendarId,
-                "icalURL": icalURL,
-            }
+            parser.add_section("SETTINGS")
+            parser.set("SETTINGS", "calendarId", calendarId)
+            parser.set("SETTINGS", "icalURL", icalURL)
+            parser.set(
+                "SETTINGS",
+                "; Do not leave lang option empty, to get ALL classes (both eng and sv) enter: 0000",
+            )
+            parser.set("SETTINGS", "language", lang)
             parser.write(f)
 
-    calendar_id = parser["DEFAULT"]["calendarId"]
-    ical_url = parser["DEFAULT"]["icalURL"]
+    calendar_id = parser["SETTINGS"]["calendarId"]
+    ical_url = parser["SETTINGS"]["icalURL"]
+    lang = parser["SETTINGS"]["LANGUAGE"]
     ical_file = request.urlopen(ical_url).read().decode("utf-8")
 
-    return calendar_id, ical_file
+    return calendar_id, ical_file, lang
 
 
 def addEvents(service, calendar_id):  # Adds each event from the ics file
