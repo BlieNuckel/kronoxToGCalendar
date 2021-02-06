@@ -2,7 +2,6 @@ import pickle
 import os.path
 from urllib import request
 import re
-from google.auth.transport.requests import Request
 from configparser import ConfigParser
 
 CONFIG_PATH = "config.ini"
@@ -19,6 +18,7 @@ if os.path.isfile(CONFIG_PATH):
     os.system("pip install icalendar")
     os.system("pip install beautifulsoup4")
 
+from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
