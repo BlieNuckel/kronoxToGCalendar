@@ -10,45 +10,70 @@ import re
 from icalendar import Calendar
 from google.auth.transport.requests import Request
 from bs4 import BeautifulSoup
+from configparser import ConfigParser
+
+CONFIG_PATH = "config.ini"
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
-
-CALENDAR_ID = "ep55du49memdv685dupovlp6kk@group.calendar.google.com"
-
-ICAL_URL = "https://schema.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en"
-ICAL_FILE = request.urlopen(ICAL_URL).read().decode("utf-8")
 
 PATTERN1 = re.compile("\s+")
 PATTERN2 = re.compile(",+")
 
 
 def main():
-    service = creds()
-    cal = event_edit()
 
-    clearCalendar(service)
+    calendar_id, ical_file = configLoader()
+
+    service = creds()
+    cal = event_edit(ical_file)
+
+    clearCalendar(service, calendar_id)
 
     open("calendar.ics", "wb").write(cal.to_ical())
 
-    addEvents(service)
+    addEvents(service, calendar_id)
 
 
-def addEvents(service):  # Adds each event from the ics file
+def configLoader():
+    parser = ConfigParser()
+
+    if os.path.isfile(CONFIG_PATH):
+        parser.read(CONFIG_PATH)
+    else:
+        with open(CONFIG_PATH, "w") as f:
+
+            calendarId = input("Enter Google Calendar ID: ")
+            icalURL = input("Enter ics file URL: ")
+
+            parser["DEFAULT"] = {
+                "calendarId": calendarId,
+                "icalURL": icalURL,
+            }
+            parser.write(f)
+
+    calendar_id = parser["DEFAULT"]["calendarId"]
+    ical_url = parser["DEFAULT"]["icalURL"]
+    ical_file = request.urlopen(ical_url).read().decode("utf-8")
+
+    return calendar_id, ical_file
+
+
+def addEvents(service, calendar_id):  # Adds each event from the ics file
     events = parse_ics("calendar.ics")  # Parses file
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
 
     # Add each event to batch
     for i, event in enumerate(events):
-        batch.add(service.events().insert(calendarId=CALENDAR_ID, body=event))
+        batch.add(service.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
 
 
-def clearCalendar(service):  # Clears calendar
+def clearCalendar(service, calendar_id):  # Clears calendar
     # Get current available events
     events = (
         service.events()
-        .list(calendarId=CALENDAR_ID, singleEvents=True)
+        .list(calendarId=calendar_id, singleEvents=True)
         .execute()
     )
 
@@ -57,14 +82,14 @@ def clearCalendar(service):  # Clears calendar
     # Add delete call for each event to batch
     for event in events["items"]:
         eId = event["id"]
-        batch.add(service.events().delete(calendarId=CALENDAR_ID, eventId=eId))
+        batch.add(service.events().delete(calendarId=calendar_id, eventId=eId))
 
     batch.execute()
 
 
-def event_edit():
+def event_edit(ical_file):
     # ics to Calendar object
-    cal = Calendar.from_ical(ICAL_FILE)
+    cal = Calendar.from_ical(ical_file)
 
     del_events = []  # List for events to be deleted
     for i in cal.subcomponents:  # Loop through each event
