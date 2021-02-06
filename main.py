@@ -41,6 +41,7 @@ PATTERN2 = re.compile(",+")
 def main():
     service = creds()
     cal = event_edit()
+    clearCalendar(service)
 
     open("calendar.ics", "wb").write(cal.to_ical())
 
@@ -50,6 +51,18 @@ def main():
 
     for i, event in enumerate(events):
         batch.add(service.events().insert(calendarId=CALENDAR_ID, body=event))
+    batch.execute()
+
+
+def clearCalendar(service):
+    events = service.events().list(calendarId=CALENDAR_ID).execute()
+
+    batch = service.new_batch_http_request()
+
+    for event in events["items"]:
+        eId = event["id"]
+        batch.add(service.events().delete(calendarId=CALENDAR_ID, eventId=eId))
+
     batch.execute()
 
 
