@@ -46,7 +46,7 @@ def configLoader():
             os.system("pip install beautifulsoup4")
 
             calendarId = input("Enter Google Calendar ID: ")
-            icalURL = input("Enter ics file URL: ")
+            icalURL = input("Enter Kronox iCal file URL: ")
             lang = input(
                 "Enter language of the classes you attend. Simply press enter if you wish to see all classes (en/sv): "
             )
@@ -125,7 +125,7 @@ def event_edit(ical_file, lang):
 
         elif lang.lower() == "sv":
             if "eng" in editName.lower() and (
-                "tenta" not in editName.lower()
+                "exam" not in editName.lower()
                 and "guest" not in editName.lower()
             ):
                 del_events.append(i)
