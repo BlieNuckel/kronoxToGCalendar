@@ -29,12 +29,7 @@ from discord_webhook import DiscordWebhook
 
 def main():
 
-    (
-        calendar_id,
-        ical_file,
-        lang,
-        webhook_url,
-    ) = configLoader()
+    (calendar_id, ical_file, lang, webhook_url, decode_fix) = configLoader()
 
     service = creds()
     cal = event_edit(ical_file, lang)
@@ -43,7 +38,7 @@ def main():
 
     open("calendar.ics", "wb").write(cal.to_ical())
 
-    addEvents(service, calendar_id, webhook_url)
+    addEvents(service, calendar_id, webhook_url, decode_fix)
 
 
 def configLoader():
@@ -67,6 +62,7 @@ def configLoader():
             parser.set("SETTINGS", "icalURL", icalURL)
             parser.set("SETTINGS", "language", lang)
             parser.set("SETTINGS", "discordIntegration", discordIntegration)
+            parser.set("SETTINGS", "decodeFix", "y")
             if discordIntegration == "y":
                 parser.add_section("DISCORD_SETTINGS")
                 parser.set(
@@ -81,16 +77,17 @@ def configLoader():
     lang = parser["SETTINGS"]["LANGUAGE"]
     global discord_integration
     discord_integration = parser["SETTINGS"]["discordIntegration"]
+    decode_fix = parser["SETTIGNS"]["decodeFix"]
     webhook_url = None
     if discord_integration == "y":
         webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
     ical_file = request.urlopen(ical_url).read().decode("utf-8")
 
-    return calendar_id, ical_file, lang, webhook_url
+    return calendar_id, ical_file, lang, webhook_url, decode_fix
 
 
-def addEvents(service, calendar_id, webhook_url):  # Adds each event
-    events = parse_ics("calendar.ics")  # Parses file
+def addEvents(service, calendar_id, webhook_url, decode_fix):  # Adds events
+    events = parse_ics("calendar.ics", decode_fix)  # Parses file
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
 
@@ -215,7 +212,7 @@ def cb_insert_event(request_id, response, e):  # Callback from adding events
             print("({}) - Exception {}".format(request_id, e))
 
 
-def parse_ics(ics):  # Parses ics file into list of event dicts
+def parse_ics(ics, decode_fix):  # Parses ics file into list of event dicts
     events = []
     with open(ics, "r") as rf:
         ical = Calendar().from_ical(rf.read())
@@ -227,10 +224,9 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
 
                     if name in ["SUMMARY", "LOCATION"]:
                         event[name.lower()] = (
-                            prop.to_ical()
-                            .decode("utf-8")
-                            .encode("latin-1")
-                            .decode("utf-8")
+                            prop.to_ical().decode("utf-8")
+                            # .encode("latin-1")
+                            # .decode("utf-8")
                         )
 
                     elif name == "DTSTART":
@@ -262,12 +258,15 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
                         }
 
                     elif name == "DESCRIPTION":
-                        desc = (
-                            prop.to_ical()
-                            .decode("utf-8")
-                            .encode("latin-1")
-                            .decode("utf-8")
-                        )
+                        if decode_fix == "y":
+                            desc = prop.to_ical().decode("utf-8")
+                        else:
+                            desc = (
+                                prop.to_ical()
+                                .decode("utf-8")
+                                .encode("latin-1")
+                                .decode("utf-8")
+                            )
                         desc = desc.replace("\xa0", " ")
                         if name.lower() in event:
                             event[name.lower()] = (
