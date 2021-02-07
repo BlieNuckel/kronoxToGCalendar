@@ -3,3 +3,6 @@ token.pickle
 googleAPI.py
 config.ini
 kronoxToGCalendar.zip
+discordErrorNotifier.py
+.env
+__pycache__

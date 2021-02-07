@@ -1,5 +1,6 @@
 import pickle
 import os.path
+import time
 from urllib import request
 import re
 from configparser import ConfigParser
@@ -11,23 +12,30 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 PATTERN1 = re.compile("\s+")
 PATTERN2 = re.compile(",+")
 
-if os.path.isfile(CONFIG_PATH):
+if not os.path.isfile(CONFIG_PATH):
     os.system(
         "pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
     )
     os.system("pip install icalendar")
     os.system("pip install beautifulsoup4")
+    os.system("pip install discord-webhook")
 
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
 from bs4 import BeautifulSoup
+from discord_webhook import DiscordWebhook
 
 
 def main():
 
-    calendar_id, ical_file, lang = configLoader()
+    (
+        calendar_id,
+        ical_file,
+        lang,
+        webhook_url,
+    ) = configLoader()
 
     service = creds()
     cal = event_edit(ical_file, lang)
@@ -36,7 +44,7 @@ def main():
 
     open("calendar.ics", "wb").write(cal.to_ical())
 
-    addEvents(service, calendar_id)
+    addEvents(service, calendar_id, webhook_url)
 
 
 def configLoader():
@@ -51,22 +59,38 @@ def configLoader():
             lang = input(
                 "Enter language of the classes you attend. Simply press enter if you wish to see all classes (en/sv): "
             )
+            discordIntegration = input(
+                "Do you wish to setup a Discord Webhook for status updates? (y/n): "
+            ).lower()
 
             parser.add_section("SETTINGS")
             parser.set("SETTINGS", "calendarId", calendarId)
             parser.set("SETTINGS", "icalURL", icalURL)
             parser.set("SETTINGS", "language", lang)
+            parser.set("SETTINGS", "discordIntegration", discordIntegration)
+            if discordIntegration == "y":
+                parser.add_section("DISCORD_SETTINGS")
+                parser.set(
+                    "DISCORD_SETTINGS",
+                    "webhook",
+                    input("Please enter Discord webhook URL: "),
+                )
             parser.write(f)
 
     calendar_id = parser["SETTINGS"]["calendarId"]
     ical_url = parser["SETTINGS"]["icalURL"]
     lang = parser["SETTINGS"]["LANGUAGE"]
+    global discord_integration
+    discord_integration = parser["SETTINGS"]["discordIntegration"]
+    webhook_url = None
+    if discord_integration == "y":
+        webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
     ical_file = request.urlopen(ical_url).read().decode("utf-8")
 
-    return calendar_id, ical_file, lang
+    return calendar_id, ical_file, lang, webhook_url
 
 
-def addEvents(service, calendar_id):  # Adds each event from the ics file
+def addEvents(service, calendar_id, webhook_url):  # Adds each event
     events = parse_ics("calendar.ics")  # Parses file
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
@@ -75,6 +99,27 @@ def addEvents(service, calendar_id):  # Adds each event from the ics file
     for i, event in enumerate(events):
         batch.add(service.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
+
+    global discord_integration
+
+    if discord_integration == "y":
+        global errorSet
+        errorSet = set()
+
+        global errorCount
+        errorCount = 0
+
+        if errorCount == 0:
+            DiscordWebhook(
+                url=webhook_url,
+                content="Successfully updated schedule without errors",
+            ).execute()
+        else:
+            joinedString = ", ".join([str(i) for i in errorSet])
+            content = (
+                f"{errorCount} errors, following errors found: " + joinedString
+            )
+            DiscordWebhook(url=webhook_url, content=content).execute()
 
 
 def clearCalendar(service, calendar_id):  # Clears calendar
@@ -153,13 +198,22 @@ def name_format(name):
 
 
 def cb_insert_event(request_id, response, e):  # Callback from adding events
-    summary = (
-        response["summary"] if response and "summary" in response else "?"
-    )
-    if not e:
-        print("({}) - Insert event {}".format(request_id, summary))
+    global discord_integration
+    if discord_integration == "y":
+        if e:
+            global errorSet
+            global errorCount
+
+            errorSet.add(str(e).split("Details:")[1][2:-3])
+            errorCount += 1
     else:
-        print("({}) - Exception {}".format(request_id, e))
+        summary = (
+            response["summary"] if response and "summary" in response else "?"
+        )
+        if not e:
+            print("({}) - Insert event {}".format(request_id, summary))
+        else:
+            print("({}) - Exception {}".format(request_id, e))
 
 
 def parse_ics(ics):  # Parses ics file into list of event dicts
@@ -215,7 +269,7 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
                             .encode("latin-1")
                             .decode("utf-8")
                         )
-                        desc = desc.replace(u"\xa0", u" ")
+                        desc = desc.replace("\xa0", " ")
                         if name.lower() in event:
                             event[name.lower()] = (
                                 desc + "\r\n" + event[name.lower()]
@@ -225,7 +279,7 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
 
                     elif name == "X-ALT-DESC" and "description" not in event:
                         soup = BeautifulSoup(prop, "lxml")
-                        desc = soup.body.text.replace(u"\xa0", u" ")
+                        desc = soup.body.text.replace("\xa0", " ")
                         if "description" in event:
                             event["description"] += "\r\n" + desc
                         else:
