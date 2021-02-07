@@ -62,7 +62,7 @@ def configLoader():
             parser.set("SETTINGS", "icalURL", icalURL)
             parser.set("SETTINGS", "language", lang)
             parser.set("SETTINGS", "discordIntegration", discordIntegration)
-            parser.set("SETTINGS", "decodeFix", "y")
+            parser.set("SETTINGS", "decodeFix", "n")
             if discordIntegration == "y":
                 parser.add_section("DISCORD_SETTINGS")
                 parser.set(
@@ -77,7 +77,7 @@ def configLoader():
     lang = parser["SETTINGS"]["LANGUAGE"]
     global discord_integration
     discord_integration = parser["SETTINGS"]["discordIntegration"]
-    decode_fix = parser["SETTIGNS"]["decodeFix"]
+    decode_fix = parser["SETTINGS"]["decodeFix"]
     webhook_url = None
     if discord_integration == "y":
         webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
