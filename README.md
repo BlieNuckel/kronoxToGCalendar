@@ -8,6 +8,12 @@ The first time the script is run it must be run either from an IDE or through so
 
 During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORTANT TO READ BEFORE USING THE SCRIPT**
 
+## Requirements
+
+1. The script requires PIP to be installed and configured as a PATH variable. **IMPORTANT: The script uses pip to install the libraries listed in the Requirements.txt. If you do not wish for the script to download and install these libraries do _not_ run the script**
+
+
+
 ## Google Calendar ID
 
 This is the ID that Google uses to know which calendar to modify and add the classes to. This can be found under the settings for a calendar in Google Calendar.
