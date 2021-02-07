@@ -24,6 +24,12 @@ This setting helps filter between Swedish and English classes. Due to the way so
 
 **IMPORTANT: As this removes some classes from the schedule based on a hardcoded filter, which may not perfectly apply to all classes (depending on the teacher's naming etc.) there is a risk that this will filter out important classes/events from your schedule. A safety has been added to ensure that if the event includes "tenta" or "exam" it will _never_ be removed, but beware that there is still a risk in using it.**
 
+## Discord Webhook 
+
+This setting allows you to choose whether you wish to connect a Discord Webhook to the script, that sends update messages every time the script is run. The messages specify whether the call to Google's API was successful.
+
+If this option is enabled you will be asked to enter your personal webhook's URL. You can follow this link for a simple guide on setting up a webhook: [Webhook setup](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+
 ## Google Login
 
 After the setup process a browser window should open, wherein the script requests access to Google Calendar. Since the script is very basic and is not official, there will be a warning saying that the script has not been verified by Google and that it is not secure to connect.
@@ -41,3 +47,19 @@ After this the events should be added to the calendar specified in the setup pro
 
 **IMPORTANT: The script does _not_ access anything other than the one calendar you specify by the calendar ID and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed. The warning from Google is simply based on the fact that Google has not manually reviewed the script and confirmed that it is safe for use.**
 
+# Other options
+
+The config file also takes these following options, however only if edited manually:
+
+## decodeFix
+
+```
+[SETTINGS]
+decodeFix = y
+```
+
+A fix that may help solve the script crashing because of a ```.decode("utf-8")``` error.
+
+# Cloud Service
+
+If you wish to have the script running automatically, I can recommend [Heroku](https://www.heroku.com/) as a free solution, to have the script run at scheduled intervals.
