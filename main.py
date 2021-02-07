@@ -1,6 +1,5 @@
 import pickle
 import os.path
-import time
 from urllib import request
 import re
 from configparser import ConfigParser
