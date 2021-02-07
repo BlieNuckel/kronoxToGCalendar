@@ -223,11 +223,18 @@ def parse_ics(ics, decode_fix):  # Parses ics file into list of event dicts
                 for name, prop in comp.property_items():
 
                     if name in ["SUMMARY", "LOCATION"]:
-                        event[name.lower()] = (
-                            prop.to_ical().decode("utf-8")
-                            # .encode("latin-1")
-                            # .decode("utf-8")
-                        )
+
+                        if decode_fix == "y":
+                            event[name.lower()] = prop.to_ical().decode(
+                                "utf-8"
+                            )
+                        else:
+                            event[name.lower()] = (
+                                prop.to_ical()
+                                .decode("utf-8")
+                                .encode("latin-1")
+                                .decode("utf-8")
+                            )
 
                     elif name == "DTSTART":
                         event["start"] = {
