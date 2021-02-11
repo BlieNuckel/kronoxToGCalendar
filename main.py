@@ -4,7 +4,7 @@ from urllib import request
 import re
 from configparser import ConfigParser
 
-CONFIG_PATH = os.path.join(os.path.dirname(__file__),"config.ini")
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
@@ -36,7 +36,9 @@ def main():
 
     clearCalendar(service, calendar_id)
 
-    open("calendar.ics", "wb").write(cal.to_ical())
+    open(os.path.join(os.path.dirname(__file__), "calendar.ics"), "wb").write(
+        cal.to_ical()
+    )
 
     addEvents(service, calendar_id, webhook_url, decode_fix)
 
@@ -87,7 +89,9 @@ def configLoader():
 
 
 def addEvents(service, calendar_id, webhook_url, decode_fix):  # Adds events
-    events = parse_ics("calendar.ics", decode_fix)  # Parses file
+    events = parse_ics(
+        os.path.join(os.path.dirname(__file__), "calendar.ics"), decode_fix
+    )  # Parses file
 
     batch = service.new_batch_http_request(callback=cb_insert_event)
 
@@ -325,8 +329,10 @@ def creds():
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists("token.pickle"):
-        with open("token.pickle", "rb") as token:
+    if os.path.exists(os.path.join(os.path.dirname(__file__), "token.pickle")):
+        with open(
+            os.path.join(os.path.dirname(__file__), "token.pickle"), "rb"
+        ) as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -334,11 +340,14 @@ def creds():
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                "credentials.json", SCOPES
+                os.path.join(os.path.dirname(__file__), "credentials.json"),
+                SCOPES,
             )
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open("token.pickle", "wb") as token:
+        with open(
+            os.path.join(os.path.dirname(__file__), "token.pickle"), "wb"
+        ) as token:
             pickle.dump(creds, token)
 
     return build("calendar", "v3", credentials=creds)
