@@ -170,9 +170,13 @@ def event_edit(ical_file, lang):
                 del_events.append(i)
 
         elif lang.lower() == "sv":
-            if "eng" in editName.lower() and (
-                "exam" not in editName.lower()
-                and "guest" not in editName.lower()
+            if (
+                "eng" in editName.lower()
+                or "lecture" in editName.lower()
+                and (
+                    "exam" not in editName.lower()
+                    and "guest" not in editName.lower()
+                )
             ):
                 del_events.append(i)
 
