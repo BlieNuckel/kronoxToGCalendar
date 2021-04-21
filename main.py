@@ -152,7 +152,6 @@ def event_edit(ical_file, lang):
         # Clean up the name
         editName = i["summary"]
         editName = editName.replace(":  :", ":")
-        editName = editName.replace("\\", "+")
         editName = editName.rstrip(" : ")
         for j in PATTERN1.findall(i["summary"]):
             editName = editName.replace(j, " ")
