@@ -33,6 +33,7 @@ def main():
 
     service = creds()
     cal = event_edit(ical_file, lang)
+    print(cal)
 
     clearCalendar(service, calendar_id)
 
@@ -151,6 +152,7 @@ def event_edit(ical_file, lang):
         # Clean up the name
         editName = i["summary"]
         editName = editName.replace(":  :", ":")
+        editName = editName.replace("\\", "+")
         editName = editName.rstrip(" : ")
         for j in PATTERN1.findall(i["summary"]):
             editName = editName.replace(j, " ")
@@ -159,26 +161,20 @@ def event_edit(ical_file, lang):
 
         # NAZILA FIX: FILTERS ENGLISH OR SWEDISH CLASSES OUT #
         if lang.lower() == "en":
-            if (
-                "sv" in editName.lower()
-                or "föreläsning" in editName.lower()
-                and (
+            if "sv" in editName.lower() or "föreläsning" in editName.lower():
+                if (
                     "tenta" not in editName.lower()
-                    and "guest" not in editName.lower()
-                )
-            ):
-                del_events.append(i)
+                    or "guest" not in editName.lower()
+                ):
+                    del_events.append(i)
 
         elif lang.lower() == "sv":
-            if (
-                "eng" in editName.lower()
-                or "lecture" in editName.lower()
-                and (
+            if "eng" in editName.lower() or "lecture" in editName.lower():
+                if (
                     "exam" not in editName.lower()
                     and "guest" not in editName.lower()
-                )
-            ):
-                del_events.append(i)
+                ):
+                    del_events.append(i)
 
         i["summary"] = editName
 
@@ -194,7 +190,12 @@ def name_format(name):
     # Split name and format SUMMARY in readable way
     if name[0] == "K":
         split_name = re.split("Kurs.grp: | Sign: | Moment: | Program: ", name)
-        return split_name[1] + " : " + split_name[3] + " : " + split_name[2]
+        if "en" in split_name[3] and "sv" in split_name[3]:
+            return split_name[1] + " : " + split_name[2]
+        else:
+            return (
+                split_name[1] + " : " + split_name[3] + " : " + split_name[2]
+            )
 
     elif name[0] == "S":
         split_name = re.split("Sign: | Moment: | Program: ", name)
