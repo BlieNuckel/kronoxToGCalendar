@@ -34,7 +34,6 @@ def main():
 
     service = creds()
     cal = event_edit(ical_file, lang)
-    print(cal)
 
     clearCalendar(service, calendar_id)
 
