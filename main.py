@@ -10,6 +10,7 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 PATTERN1 = re.compile("\s+")
 PATTERN2 = re.compile(",+")
+PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
     os.system(
@@ -190,11 +191,31 @@ def name_format(name):
     if name[0] == "K":
         split_name = re.split("Kurs.grp: | Sign: | Moment: | Program: ", name)
         if "en" in split_name[3] and "sv" in split_name[3]:
-            return split_name[1] + " : " + split_name[2]
+            if len(split_name[1].split(" ")) == 1:
+                return split_name[1] + " : " + split_name[2]
+            else:
+                return (
+                    "".join(PATTERN3.findall(split_name[1])).upper()
+                    + " : "
+                    + split_name[2]
+                )
         else:
-            return (
-                split_name[1] + " : " + split_name[3] + " : " + split_name[2]
-            )
+            if len(split_name[1].split(" ")) == 1:
+                return (
+                    split_name[1]
+                    + " : "
+                    + split_name[3]
+                    + " : "
+                    + split_name[2]
+                )
+            else:
+                return (
+                    "".join(PATTERN3.findall(split_name[1])).upper()
+                    + " : "
+                    + split_name[3]
+                    + " : "
+                    + split_name[2]
+                )
 
     elif name[0] == "S":
         split_name = re.split("Sign: | Moment: | Program: ", name)
