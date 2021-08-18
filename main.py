@@ -3,6 +3,7 @@ import os.path
 from urllib import request
 import re
 from configparser import ConfigParser
+import datetime
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -185,6 +186,9 @@ def event_edit(ical_file, lang):
 
 
 def name_format(name):
+    
+    print(name)
+    
     split_name = None
     # Split name and format SUMMARY in readable way
     if name[0] == "K":
