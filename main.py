@@ -3,7 +3,6 @@ import os.path
 from urllib import request
 import re
 from configparser import ConfigParser
-import datetime
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -51,30 +50,7 @@ def configLoader():
     if os.path.isfile(CONFIG_PATH):
         parser.read(CONFIG_PATH)
     else:
-        with open(CONFIG_PATH, "w") as f:
-            calendarId = input("Enter Google Calendar ID: ")
-            icalURL = input("Enter Kronox iCal file URL: ")
-            lang = input(
-                "Enter language of the classes you attend. Simply press enter if you wish to see all classes (en/sv): "
-            )
-            discordIntegration = input(
-                "Do you wish to setup a Discord Webhook for status updates? (y/n): "
-            ).lower()
-
-            parser.add_section("SETTINGS")
-            parser.set("SETTINGS", "calendarId", calendarId)
-            parser.set("SETTINGS", "icalURL", icalURL)
-            parser.set("SETTINGS", "language", lang)
-            parser.set("SETTINGS", "discordIntegration", discordIntegration)
-            parser.set("SETTINGS", "decodeFix", "y")
-            if discordIntegration == "y":
-                parser.add_section("DISCORD_SETTINGS")
-                parser.set(
-                    "DISCORD_SETTINGS",
-                    "webhook",
-                    input("Please enter Discord webhook URL: "),
-                )
-            parser.write(f)
+        import GUI
 
     calendar_id = parser["SETTINGS"]["calendarId"]
     ical_url = parser["SETTINGS"]["icalURL"]
@@ -158,6 +134,8 @@ def event_edit(ical_file, lang):
             editName = editName.replace(j, " ")
         for j in PATTERN2.findall(i["summary"]):
             editName = editName.replace(j, ",")
+        editName = editName.replace(", ", " | ")
+        editName = editName.replace(";", "")
 
         # NAZILA FIX: FILTERS ENGLISH OR SWEDISH CLASSES OUT #
         if lang.lower() == "en":
@@ -176,6 +154,10 @@ def event_edit(ical_file, lang):
                 ):
                     del_events.append(i)
 
+        if len(editName) > 63:
+            i["description"] = editName
+            editName = editName[:63] + "..."
+        
         i["summary"] = editName
 
     # Delete events from Calendar
