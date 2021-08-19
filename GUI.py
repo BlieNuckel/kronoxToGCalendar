@@ -53,6 +53,10 @@ class Application(tk.Frame):
         self.discord_extra.grid(row=2, column=0)
         
         confirm_button_frame = tk.Frame(root)
+        
+        self.read_me_button = tk.Button(confirm_button_frame, text="Installation Guide", command=self.open_read_me)
+        self.read_me_button.pack(anchor="w", side="bottom")
+        
         self.confirm_button = tk.Button(confirm_button_frame, text="Confirm", command=self.confirm_pressed)
         self.confirm_button.pack(side="bottom")
         confirm_button_frame.grid(row=12, column=0)
@@ -110,6 +114,9 @@ class Application(tk.Frame):
             valid = False
         
         return valid
+    
+    def open_read_me(self):
+        os.startfile("https://github.com/BlieNuckel/kronoxToGCalendar")
         
 
 app = Application(master=root)
