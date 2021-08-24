@@ -124,7 +124,6 @@ def event_edit(event_list, lang):
             edit_name = edit_name.replace(j, " ")
         for j in PATTERN2.findall(i["summary"]):
             edit_name = edit_name.replace(j, ",")
-        edit_name = edit_name.replace(", ", " | ")
         edit_name = edit_name.replace(";", "")
 
         # NAZILA FIX: FILTERS ENGLISH OR SWEDISH CLASSES OUT #
