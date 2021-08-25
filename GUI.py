@@ -138,7 +138,7 @@ class Application(tk.Frame):
         if self.gcal_id.get("1.0", tk.END)[26:].strip() != "@group.calendar.google.com":
             tk.messagebox.showinfo("Error", "Invalid google calendar ID")
             valid = False
-        if self.ical_url.get("1.0", tk.END)[:49].strip() != "https://schema.kronox.se/setup/jsp/SchemaICAL.ics":
+        if self.ical_url.get("1.0", tk.END)[:46].strip() != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics":
             tk.messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
         if self.discord_extra.get("1.0", tk.END)[:33].strip() != "https://discord.com/api/webhooks/" and discord_choice_var.get():
