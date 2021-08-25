@@ -4,6 +4,7 @@ from urllib import request
 import re
 from configparser import ConfigParser
 import subprocess
+import ssl
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -61,7 +62,10 @@ def config_loader():
     webhook_url = None
     if discord_integration == "y":
         webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
-    ical_file = request.urlopen(ical_url).read().decode("utf-8")
+    myssl = ssl.create_default_context()
+    myssl.check_hostname = False
+    myssl.verify_mode = ssl.CERT_NONE
+    ical_file = request.urlopen(ical_url, context=myssl).read().decode("utf-8")
 
     return calendar_id, ical_file, lang, webhook_url
 
