@@ -36,15 +36,15 @@ def main():
     error_count = 0
 
 
-    (calendar_id, ical_file, lang, webhook_url, decode_fix) = config_loader()
+    (calendar_id, ical_file, lang, webhook_url) = config_loader()
 
     service = creds()
-    event_list = parse_ics(ical_file, decode_fix)
+    event_list = parse_ics(ical_file)
     parsed_event_list = event_edit(event_list, lang)
 
     clear_calendar(service, calendar_id)
 
-    insert_event(parsed_event_list, service, calendar_id, webhook_url, decode_fix)
+    insert_event(parsed_event_list, service, calendar_id, webhook_url)
 
 
 def config_loader():
@@ -60,13 +60,12 @@ def config_loader():
     lang = parser["SETTINGS"]["LANGUAGE"]
     global discord_integration
     discord_integration = parser["SETTINGS"]["discordIntegration"]
-    decode_fix = parser["SETTINGS"]["decodeFix"]
     webhook_url = None
     if discord_integration == "y":
         webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
     ical_file = request.urlopen(ical_url).read().decode("utf-8")
 
-    return calendar_id, ical_file, lang, webhook_url, decode_fix
+    return calendar_id, ical_file, lang, webhook_url
 
 
 def insert_event(events, service, calendar_id, webhook_url):  # Adds events
