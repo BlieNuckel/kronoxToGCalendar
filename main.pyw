@@ -80,12 +80,7 @@ def insert_event(events, service, calendar_id, webhook_url):  # Adds events
 
     if discord_integration == "y":
         
-        if error_count == 0:
-            DiscordWebhook(
-                url=webhook_url,
-                content="Successfully updated schedule without errors",
-            ).execute()
-        else:
+        if error_count > 0:
             joinedString = ", ".join([str(i) for i in error_set])
             content = (
                 f"{error_count} errors, following errors found: " + joinedString
@@ -159,8 +154,6 @@ def event_edit(event_list, lang):
 
 def name_format(name):
     
-    print(name)
-    
     split_name = None
     # Split name and format SUMMARY in readable way
     if name[0] == "K":
@@ -204,17 +197,8 @@ def cb_insert_event(request_id, response, e):  # Callback from adding events
             global error_set
             global error_count
 
-            error_set.add(str(e).split("Details:")[1][2:-3])
+            error_set.add(str(e))
             error_count += 1
-    else:
-        summary = (
-            response["summary"] if response and "summary" in response else "?"
-        )
-        if not e:
-            print("({}) - Insert event {}".format(request_id, summary))
-        else:
-            print("({}) - Exception {}".format(request_id, e))
-
 
 def parse_ics(ics):  # Parses ics file into list of event dicts
     
