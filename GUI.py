@@ -83,6 +83,17 @@ class Application(tk.Frame):
     def update_add_startup_active(self):
         if add_to_startup_var.get():
             self.startup_text.set("Run script on startup")
+            startup_folder = winshell.startup()
+            
+            path = os.path.join(startup_folder, "kronoxToGCalendar_Startup.lnk")
+            target = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
+            icon = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
+            
+            shell = client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(path)
+            shortcut.TargetPath = target
+            shortcut.IconLocation = icon
+            shortcut.save()
         else:
             self.startup_text.set("Run script on startup\n!WARNING! without this option enabled\nthe script must be manually\nrun to update the\n schedule")
             
