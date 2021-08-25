@@ -14,7 +14,7 @@ PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
     os.system(
-        '"..\python\WPy64-3950\python-3.9.5.amd64\Scripts\pip.exe" install -r requirements.txt'
+        '"..\python\WPy64-3950\python-3.9.5.amd64\python.exe" -m pip install -r requirements.txt'
     )
 
 from google.auth.transport.requests import Request
