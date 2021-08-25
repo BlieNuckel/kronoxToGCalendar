@@ -3,6 +3,7 @@ import os.path
 from urllib import request
 import re
 from configparser import ConfigParser
+import subprocess
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -13,8 +14,8 @@ PATTERN2 = re.compile(",+")
 PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
-    os.system(
-        r'"../python/WPy64-3950/python-3.9.5.amd64/python.exe" -m pip install -r requirements.txt'
+    subprocess.call(
+        '"../python/WPy64-3950/python-3.9.5.amd64/python.exe" -m pip install -r requirements.txt'
     )
 
 from google.auth.transport.requests import Request
