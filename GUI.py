@@ -127,7 +127,7 @@ class Application(tk.Frame):
             shortcut.IconLocation = icon
             shortcut.save()
         
-        return
+        root.destroy()
             
     def valid_check(self):
         valid = True

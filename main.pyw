@@ -51,6 +51,7 @@ def config_loader():
         parser.read(CONFIG_PATH)
     else:
         import GUI
+        parser.read(CONFIG_PATH)
 
     calendar_id = parser["SETTINGS"]["calendarId"]
     ical_url = parser["SETTINGS"]["icalURL"]
