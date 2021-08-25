@@ -21,7 +21,6 @@ from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
-from bs4 import BeautifulSoup
 from discord_webhook import DiscordWebhook
 
 

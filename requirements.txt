@@ -2,7 +2,6 @@ google-api-python-client
 google-auth-httplib2 
 google-auth-oauthlib
 icalendar
-beautifulsoup4
 discord_webhook
 winshell
 pywin32
