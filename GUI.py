@@ -99,9 +99,9 @@ class Application(tk.Frame):
             
             icalURL = self.ical_url.get("1.0", tk.END)
             lang = lang_var.get()
-            if self.discord_choice_var.get():
+            if discord_choice_var.get():
                 discordIntegration = "y"
-            elif not self.discord_choice_var.get():
+            elif not discord_choice_var.get():
                 discordIntegration = "n"
 
             parser.add_section("SETTINGS")
