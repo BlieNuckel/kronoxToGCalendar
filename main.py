@@ -14,11 +14,8 @@ PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
     os.system(
-        "pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+        '"..\python\WPy64-3950\python-3.9.5.amd64\Scripts\pip.exe" install -r requirements.txt'
     )
-    os.system("pip install icalendar")
-    os.system("pip install beautifulsoup4")
-    os.system("pip install discord-webhook")
 
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
