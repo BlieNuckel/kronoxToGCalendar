@@ -8,7 +8,7 @@ from tkinter import messagebox
 root = tk.Tk()
 root.geometry("500x500")
 root.grid_columnconfigure(0, weight=1)
-root.grid_rowconfigure(14, weight=1)
+root.grid_rowconfigure(12, weight=1)
 
 lang_var = tk.StringVar(root, "1")
 discord_choice_var = tk.BooleanVar(root, False, name="discord_choice_var")
@@ -41,13 +41,9 @@ class Application(tk.Frame):
                                    value = value).pack(side="left", ipady = 5)
         frame.grid(row=6, column=0)
         
-        tk.Label(root, text="Decode Fix (leave blank, unless you have had previous issues with the script)").grid(row=7, column=0)
-        self.decode_fix = tk.Checkbutton(root)
-        self.decode_fix.grid(row=8, column=0)
-        
-        tk.Label(root, text="Discord integration").grid(row=9, column=0)
+        tk.Label(root, text="Discord integration").grid(row=7, column=0)
         self.discord_choice = tk.Checkbutton(root, variable="discord_choice_var", offvalue=False, onvalue=True)
-        self.discord_choice.grid(row=10, column=0)
+        self.discord_choice.grid(row=8, column=0)
         discord_choice_var.trace_add("write", lambda var_name, var_index, operation: self.update_discord_active())
         
         self.discord_extra_frame = tk.Frame(root)
@@ -59,8 +55,8 @@ class Application(tk.Frame):
         self.startup_text.set("Run script on startup\n!WARNING! without this option enabled\nthe script must be manually\nrun to update the\n schedule")
         self.add_to_startup_label = tk.Label(root, textvariable=self.startup_text)
         self.add_to_startup = tk.Checkbutton(root, variable="add_to_startup_var", offvalue=False, onvalue=True)
-        self.add_to_startup_label.grid(row=12)
-        self.add_to_startup.grid(row=13)
+        self.add_to_startup_label.grid(row=10)
+        self.add_to_startup.grid(row=11)
         add_to_startup_var.trace_add("write", lambda var_name, var_index, operation: self.update_add_startup_active())
         
         confirm_button_frame = tk.Frame(root)
@@ -70,12 +66,12 @@ class Application(tk.Frame):
         
         self.confirm_button = tk.Button(confirm_button_frame, text="Confirm", command=self.confirm_pressed)
         self.confirm_button.pack()
-        confirm_button_frame.grid(row=14, column=0)
+        confirm_button_frame.grid(row=12, column=0)
         
 
     def update_discord_active(self):
         if discord_choice_var.get():
-            self.discord_extra_frame.grid(row=11, column=0)
+            self.discord_extra_frame.grid(row=9, column=0)
         else:
             self.discord_extra_frame.grid_forget()
             
@@ -109,7 +105,6 @@ class Application(tk.Frame):
             parser.set("SETTINGS", "icalURL", icalURL)
             parser.set("SETTINGS", "language", lang)
             parser.set("SETTINGS", "discordIntegration", discordIntegration)
-            parser.set("SETTINGS", "decodeFix", "y")
             if discordIntegration == "y":
                 parser.add_section("DISCORD_SETTINGS")
                 parser.set(
