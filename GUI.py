@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import os
 from configparser import ConfigParser
+import winshell
+from win32com import client
 
 root = tk.Tk()
 root.geometry("500x500")
@@ -76,12 +78,14 @@ class Application(tk.Frame):
             self.discord_extra_frame.grid(row=11, column=0)
         else:
             self.discord_extra_frame.grid_forget()
-    
+            
+            
     def update_add_startup_active(self):
         if add_to_startup_var.get():
-          self.startup_text.set("Run script on startup")
+            self.startup_text.set("Run script on startup")
         else:
-          self.startup_text.set("Run script on startup\n!WARNING! without this option enabled\nthe script must be manually\nrun to update the\n schedule")
+            self.startup_text.set("Run script on startup\n!WARNING! without this option enabled\nthe script must be manually\nrun to update the\n schedule")
+            
             
     def confirm_pressed(self):
         if not self.valid_check():
@@ -116,8 +120,18 @@ class Application(tk.Frame):
             parser.write(f)
             
         if self.add_to_startup.get():
-            pass
-        
+            startup_folder = winshell.startup()
+            
+            path = os.path.join(startup_folder, "kronoxToGCalendar_Startup.lnk")
+            target = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
+            icon = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
+            
+            shell = client.Dispatch("WScript.Shell")
+            shortcut = shell.CreateShortCut(path)
+            shortcut.TargetPath = target
+            shortcut.IconLocation = icon
+            shortcut.save()
+            
     def valid_check(self):
         valid = True
         
