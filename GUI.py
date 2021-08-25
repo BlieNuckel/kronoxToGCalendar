@@ -1,5 +1,4 @@
 import tkinter as tk
-from tkinter import messagebox
 import os
 from configparser import ConfigParser
 import winshell
