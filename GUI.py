@@ -4,7 +4,7 @@ import os
 from configparser import ConfigParser
 
 root = tk.Tk()
-root.geometry("500x500~")
+root.geometry("500x500")
 root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(14, weight=1)
 
@@ -115,6 +115,9 @@ class Application(tk.Frame):
                 )
             parser.write(f)
             
+        if self.add_to_startup.get():
+            pass
+        
     def valid_check(self):
         valid = True
         
