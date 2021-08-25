@@ -119,7 +119,7 @@ class Application(tk.Frame):
                 )
             parser.write(f)
             
-        if self.add_to_startup.get():
+        if add_to_startup_var.get():
             startup_folder = winshell.startup()
             
             path = os.path.join(startup_folder, "kronoxToGCalendar_Startup.lnk")
