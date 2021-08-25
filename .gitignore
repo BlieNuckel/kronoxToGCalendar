@@ -7,3 +7,4 @@ discordErrorNotifier.py
 .env
 __pycache__
 .venv
+update.py
