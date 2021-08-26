@@ -16,7 +16,7 @@ PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
     subprocess.call(
-        '"batch/install_requirements.vbs"'
+        '"batch/install_requirements.bat"'
     )
 
 from google.auth.transport.requests import Request
