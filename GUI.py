@@ -118,8 +118,8 @@ class Application(tk.Frame):
             startup_folder = winshell.startup()
             
             path = os.path.join(startup_folder, "kronoxToGCalendar_Startup.lnk")
-            target = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
-            icon = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.bat"))
+            target = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.vbs"))
+            icon = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "run.vbs"))
             
             shell = client.Dispatch("WScript.Shell")
             shortcut = shell.CreateShortCut(path)
