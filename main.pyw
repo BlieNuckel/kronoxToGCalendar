@@ -3,12 +3,8 @@ import os.path
 from urllib import request
 import re
 from configparser import ConfigParser
+import subprocess
 import ssl
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from icalendar import Calendar
-from discord_webhook import DiscordWebhook
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -17,6 +13,18 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 PATTERN1 = re.compile("\s+")
 PATTERN2 = re.compile(",+")
 PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
+
+if not os.path.isfile(CONFIG_PATH):
+    subprocess.call(
+        '"batch/install_requirements.bat"'
+    )
+
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from icalendar import Calendar
+from discord_webhook import DiscordWebhook
+
 
 def main():
 
