@@ -49,13 +49,7 @@ After this the events should be added to the calendar specified in the setup pro
 
 ## Run Script On Startup
 
-This option is recommended, and is required to ensure the schedule stays up to date. Without it, you must manually run the script through the run file to make sure the calendars stay up to date. Without any 
-
-# Cloud Service
-
-If you wish to have the script running automatically without it running locally on your computer, I can recommend [Heroku](https://www.heroku.com/) as a free solution.
-
-Be aware that setting this up requires knowledge of what you're doing and so it may break the script if done incorrectly, as the .exe and .zip files released don't work with Herokus services directly.
+This option is recommended, and is required to ensure the schedule stays up to date. Without it, you must manually run the script through the run file to make sure the calendars stay up to date. You can always remove the automatic updates by running the 'remove_startup' file in the installed directory.
 
 # Trouble Shooting
 
@@ -66,3 +60,9 @@ Most issues stem from an incomplete config.ini file. The file can be found in <i
 ## Only a few days of schedule gets transferred to Google Calendar
   
 This issue may be a result of the kronox link inserted. Due to kronox' databases, there seem to be multiple ways to access them. To find a link that should work as intended go to [kronoX](https://kronox.hkr.se/) and search for your course code's schedule. Make sure the dates are left as starting today and going ahead 6 months.
+
+# Cloud Service
+
+If you wish to have the script running automatically without it running locally on your computer, I can recommend [Heroku](https://www.heroku.com/) as a free solution.
+
+Be aware that setting this up requires knowledge of what you're doing and so it may break the script if done incorrectly, as the .exe and .zip files released don't work with Herokus services directly.
