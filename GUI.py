@@ -148,6 +148,7 @@ class Application(tk.Frame):
         os.startfile("https://github.com/BlieNuckel/kronoxToGCalendar")
         
 
-root.lift()
+root.attributes('-topmost', 1)
+root.attributes('-topmost', 0)
 app = Application(master=root)
 app.mainloop()
