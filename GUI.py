@@ -150,6 +150,5 @@ class Application(tk.Frame):
 
 
 app = Application(master=root)
-app.attributes('-topmost', 1)
-app.attributes('-topmost', 0)
+app.lift()
 app.mainloop()
