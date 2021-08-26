@@ -5,6 +5,7 @@ import re
 from configparser import ConfigParser
 import subprocess
 import ssl
+import requests
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -24,6 +25,7 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
 from discord_webhook import DiscordWebhook
+import pkce
 
 
 def main():
@@ -260,6 +262,23 @@ def creds():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
+            
+            code_verifier = pkce.generate_code_verifier(length=128)
+            code_challenge = pkce.get_code_challenge(code_verifier)
+            
+            query = {
+                "client_id": "1087430351384-ohtt5b6umglfdik15p99g512e85ja5mr.apps.googleusercontent.com",
+                "redirect_uri": "http://127.0.0.1:0",
+                "response_type": "code",
+                "scope": "https://www.googleapis.com/auth/calendar.events",
+                "code_challenge": code_challenge,
+                "code_challenge_method": "S256"
+            }
+            
+            first_response = requests.get("https://accounts.google.com/o/oauth2/v2/auth", params=query)
+            
+            print(first_response)
+            
             flow = InstalledAppFlow.from_client_secrets_file(
                 os.path.join(os.path.dirname(__file__), "credentials.json"),
                 SCOPES,
