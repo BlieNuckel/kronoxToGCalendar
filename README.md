@@ -2,7 +2,7 @@
 
 The scripts function is to import any kronox schedule into a Google Calendar. When the script is run, it will only sync classes _once_ and as such it must be run periodically, either automatically or manually to ensure that all data is up to date.
 
-The first time the script is run it must be run either from an IDE or through some other terminal. This is important, as the script generates a config file based on several terminal inputs on the first run. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
+The first time the script is run it generates a config file based on several user inputs. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
 
 # Setup
 
