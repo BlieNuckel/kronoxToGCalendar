@@ -53,6 +53,16 @@ This option is recommended, and is required to ensure the schedule stays up to d
 
 # Cloud Service
 
-If you wish to have the script running automatically without it running locally on your computer, I can recommend [Heroku](https://www.heroku.com/) as a free solution, to have the script run at scheduled intervals.
+If you wish to have the script running automatically without it running locally on your computer, I can recommend [Heroku](https://www.heroku.com/) as a free solution.
 
 Be aware that setting this up requires knowledge of what you're doing and so it may break the script if done incorrectly, as the .exe and .zip files released don't work with Herokus services directly.
+
+# Trouble Shooting
+
+## General issues and fix
+
+Most issues stem from an incomplete config.ini file. The file can be found in <install-dir>/kronoxToGCalendar/config.ini. Deleting this and running the script will prompt a new setup. Make sure to fill in the settings correctly and then most issues should be fixed.
+
+## Only a few days of schedule gets transferred to Google Calendar
+  
+This issue may be a result of the kronox link inserted. Due to kronox' databases, there seem to be multiple ways to access them. To find a link that should work as intended go to [kronoX](https://kronox.hkr.se/) and search for your course code's schedule. Make sure the dates are left as starting today and going ahead 6 months.
