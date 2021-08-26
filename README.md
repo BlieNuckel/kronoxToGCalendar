@@ -2,17 +2,11 @@
 
 The scripts function is to import any kronox schedule into a Google Calendar. When the script is run, it will only sync classes _once_ and as such it must be run periodically, either automatically or manually to ensure that all data is up to date.
 
-The first time the script is run it must be run either from an IDE or through some other terminal. This is important, as the script generates a config file based on several terminal inputs on the first run. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
+The first time the script is run it generates a config file based on several user inputs. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
 
 # Setup
 
 During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORTANT TO READ BEFORE USING THE SCRIPT**
-
-## Requirements
-
-1. The script requires PIP to be installed and configured as a PATH variable. **IMPORTANT: The script uses pip to install the libraries listed in the Requirements.txt. If you do not wish for the script to download and install these libraries do _not_ run the script**
-
-
 
 ## Google Calendar ID
 
@@ -45,27 +39,30 @@ To move on and give the script access,   follow these steps:
 1. Select the google account you wish to connect to
 2. Click "advanced" in the bottom left of the warning message
 3. Click "Go to KronoxToGCal (unsafe)"
-4. Click "Allow" in the pop-up, giving the scrip access to Google Calendar
-5. Click "Allow" again
-6. Close the browser window
+4. Check off the checkbox giving the script access to editing your calendar
+5. Click "Allow"
+6. Close the browser window when it goes white, with a success message in the top left
 
 After this the events should be added to the calendar specified in the setup process.
 
 **IMPORTANT: The script does _not_ access anything other than the one calendar you specify by the calendar ID and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed. The warning from Google is simply based on the fact that Google has not manually reviewed the script and confirmed that it is safe for use.**
 
-# Other options
+## Run Script On Startup
 
-The config file also takes these following options, however only if edited manually:
+This option is recommended, and is required to ensure the schedule stays up to date. Without it, you must manually run the script through the run file to make sure the calendars stay up to date. You can always remove the automatic updates by running the 'remove_startup' file in the installed directory.
 
-## decodeFix
+# Trouble Shooting
 
-```
-[SETTINGS]
-decodeFix = y
-```
+## General issues and fix
 
-A fix that may help solve the script crashing because of a ```.decode("utf-8")``` error.
+Most issues stem from an incomplete config.ini file. The file can be found in <install-dir>/kronoxToGCalendar/config.ini. Deleting this and running the script will prompt a new setup. Make sure to fill in the settings correctly and then most issues should be fixed.
+
+## Only a few days of schedule gets transferred to Google Calendar
+  
+This issue may be a result of the kronox link inserted. Due to kronox' databases, there seem to be multiple ways to access them. To find a link that should work as intended go to [kronoX](https://kronox.hkr.se/) and search for your course code's schedule. Make sure the dates are left as starting today and going ahead 6 months.
 
 # Cloud Service
 
-If you wish to have the script running automatically, I can recommend [Heroku](https://www.heroku.com/) as a free solution, to have the script run at scheduled intervals.
+If you wish to have the script running automatically without it running locally on your computer, I can recommend [Heroku](https://www.heroku.com/) as a free solution.
+
+Be aware that setting this up requires knowledge of what you're doing and so it may break the script if done incorrectly, as the .exe and .zip files released don't work with Herokus services directly.
