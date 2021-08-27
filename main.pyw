@@ -5,7 +5,6 @@ import re
 from configparser import ConfigParser
 import subprocess
 import ssl
-from google.auth.compute_engine.credentials import Credentials
 import requests
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
@@ -17,9 +16,7 @@ PATTERN2 = re.compile(",+")
 PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
-    subprocess.call(
-        '"../batch/install_requirements.bat"'
-    )
+    subprocess.call('"../batch/install_requirements.bat"')
 
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
@@ -27,13 +24,13 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
 from discord_webhook import DiscordWebhook
 
+
 def main():
 
     global error_set
     error_set = set()
     global error_count
     error_count = 0
-
 
     (calendar_id, ical_file, lang, webhook_url) = config_loader()
 
@@ -53,6 +50,7 @@ def config_loader():
         parser.read(CONFIG_PATH)
     else:
         import GUI
+
         parser.read(CONFIG_PATH)
 
     calendar_id = parser["SETTINGS"]["calendarId"]
@@ -66,7 +64,9 @@ def config_loader():
     myssl = ssl.create_default_context()
     myssl.check_hostname = False
     myssl.verify_mode = ssl.CERT_NONE
-    ical_file = urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+    ical_file = (
+        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+    )
 
     return calendar_id, ical_file, lang, webhook_url
 
@@ -80,11 +80,12 @@ def insert_event(events, service, calendar_id, webhook_url):  # Adds events
     batch.execute()
 
     if discord_integration == "y":
-        
+
         if error_count > 0:
             joinedString = ", ".join([str(i) for i in error_set])
             content = (
-                f"{error_count} errors, following errors found: " + joinedString
+                f"{error_count} errors, following errors found: "
+                + joinedString
             )
             DiscordWebhook(url=webhook_url, content=content).execute()
 
@@ -109,7 +110,7 @@ def clear_calendar(service, calendar_id):  # Clears calendar
 
 def event_edit(event_list, lang):
     del_events = []  # List for events to be deleted
-    
+
     for i in event_list:  # Loop through each event
         i["summary"] = name_format(i["summary"])  # Format name
 
@@ -143,7 +144,7 @@ def event_edit(event_list, lang):
         if len(edit_name) > 63:
             i["description"] = edit_name
             edit_name = edit_name[:63] + "..."
-        
+
         i["summary"] = edit_name
 
     # Delete events from Calendar
@@ -154,7 +155,7 @@ def event_edit(event_list, lang):
 
 
 def name_format(name):
-    
+
     split_name = None
     # Split name and format SUMMARY in readable way
     if name[0] == "K":
@@ -201,8 +202,9 @@ def cb_insert_event(request_id, response, e):  # Callback from adding events
             error_set.add(str(e))
             error_count += 1
 
+
 def parse_ics(ics):  # Parses ics file into list of event dicts
-    
+
     events = []
     ical = Calendar.from_ical(ics)
     for i, component in enumerate(ical.walk()):
@@ -213,38 +215,38 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
             event["location"] = component.get("location")
             event["start"] = {
                 "dateTime": component.get("dtstart").dt.isoformat(),
-                "timeZone": str(component.get("dtstart").dt.tzinfo)
-                }
+                "timeZone": str(component.get("dtstart").dt.tzinfo),
+            }
             event["end"] = {
                 "dateTime": component.get("dtend").dt.isoformat(),
-                "timeZone": str(component.get("dtend").dt.tzinfo)
-                }
+                "timeZone": str(component.get("dtend").dt.tzinfo),
+            }
             event["sequence"] = component.get("sequence")
             try:
                 event["transparency"] = component.get("transparency").lower()
                 event["visibility"] = component.get("class").lower()
                 event["organizer"] = {
-                    "displayName": component.get("organizer").params.get("CN") or "",
-                    "email": re.match("mailto:(.*)", component.get("organizer")).group(1)
+                    "displayName": component.get("organizer").params.get("CN")
                     or "",
-                    }
-                
+                    "email": re.match(
+                        "mailto:(.*)", component.get("organizer")
+                    ).group(1)
+                    or "",
+                }
+
                 desc = component.get("description").replace("\xa0", " ")
                 if "description" in event:
-                    event["description"] = (
-                        desc + "\r\n" + event["description"]
-                    )
+                    event["description"] = desc + "\r\n" + event["description"]
                 else:
                     event["description"] = desc
-                
+
                 event["description"] = component.get("description")
             except AttributeError:
                 pass
-        
-            events.append(event)
-    
-    return events
 
+            events.append(event)
+
+    return events
 
 
 def creds():
@@ -262,7 +264,9 @@ def creds():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            client = requests.get("https://kronox-client-api.herokuapp.com/get_client").json()
+            client = requests.get(
+                "https://kronox-client-api.herokuapp.com/get_client"
+            ).json()
             flow = InstalledAppFlow.from_client_config(client, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
@@ -272,6 +276,7 @@ def creds():
             pickle.dump(creds, token)
 
     return build("calendar", "v3", credentials=creds)
+
 
 if __name__ == "__main__":
     main()
