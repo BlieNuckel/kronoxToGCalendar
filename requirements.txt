@@ -5,5 +5,3 @@ icalendar
 discord_webhook
 winshell
 pywin32
-certifi
-pkce

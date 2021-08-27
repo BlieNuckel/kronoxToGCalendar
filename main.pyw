@@ -1,10 +1,11 @@
 import pickle
 import os.path
-from urllib import request
+import urllib
 import re
 from configparser import ConfigParser
 import subprocess
 import ssl
+from google.auth.compute_engine.credentials import Credentials
 import requests
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
@@ -17,7 +18,7 @@ PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 if not os.path.isfile(CONFIG_PATH):
     subprocess.call(
-        '"batch/install_requirements.bat"'
+        '"../batch/install_requirements.bat"'
     )
 
 from google.auth.transport.requests import Request
@@ -25,8 +26,6 @@ from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from icalendar import Calendar
 from discord_webhook import DiscordWebhook
-import pkce
-
 
 def main():
 
@@ -67,7 +66,7 @@ def config_loader():
     myssl = ssl.create_default_context()
     myssl.check_hostname = False
     myssl.verify_mode = ssl.CERT_NONE
-    ical_file = request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+    ical_file = urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
 
     return calendar_id, ical_file, lang, webhook_url
 
@@ -247,6 +246,7 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
     return events
 
 
+
 def creds():
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
@@ -262,27 +262,8 @@ def creds():
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            
-            code_verifier = pkce.generate_code_verifier(length=128)
-            code_challenge = pkce.get_code_challenge(code_verifier)
-            
-            query = {
-                "client_id": "1087430351384-ohtt5b6umglfdik15p99g512e85ja5mr.apps.googleusercontent.com",
-                "redirect_uri": "http://127.0.0.1:0",
-                "response_type": "code",
-                "scope": "https://www.googleapis.com/auth/calendar.events",
-                "code_challenge": code_challenge,
-                "code_challenge_method": "S256"
-            }
-            
-            first_response = requests.get("https://accounts.google.com/o/oauth2/v2/auth", params=query)
-            
-            print(first_response)
-            
-            flow = InstalledAppFlow.from_client_secrets_file(
-                os.path.join(os.path.dirname(__file__), "credentials.json"),
-                SCOPES,
-            )
+            client = requests.get("https://kronox-client-api.herokuapp.com/get_client").json()
+            flow = InstalledAppFlow.from_client_config(client, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
         with open(
@@ -291,7 +272,6 @@ def creds():
             pickle.dump(creds, token)
 
     return build("calendar", "v3", credentials=creds)
-
 
 if __name__ == "__main__":
     main()
