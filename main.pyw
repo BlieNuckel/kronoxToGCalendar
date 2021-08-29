@@ -1,15 +1,16 @@
 from configparser import ConfigParser
 import os
 import subprocess
-from logic import outlook_connector
-from logic import google_connector
 import gui.main_gui
-from logic import event_handler
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
 if not os.path.isfile(CONFIG_PATH):
     subprocess.call('"batch/install_requirements.bat"')
+
+from logic import outlook_connector
+from logic import google_connector
+from logic import event_handler
 
 
 def main():
