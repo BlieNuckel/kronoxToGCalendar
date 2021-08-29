@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 from gui import GUI
 
 root = tk.Tk()
@@ -33,6 +34,10 @@ class MainApplication(tk.Frame):
         self.confirm_button.grid(row=3, column=0)
 
     def confirm_pressed(self):
+        if platform_var.get() == "1":
+            messagebox.showinfo("Error", "Please select an option.")
+            return
+
         self.platform = platform_var.get()
         root.destroy()
 

@@ -1,8 +1,4 @@
 import tkinter as tk
-import os
-from configparser import ConfigParser
-import winshell
-from win32com import client
 from tkinter import messagebox
 
 
@@ -36,6 +32,16 @@ class Application(tk.Frame):
         self.confirm_button.grid(row=3, column=0)
 
     def confirm_pressed(self):
+
+        if (
+            self.token_url_input.get("1.0", tk.END)[:66]
+            != "https://login.microsoftonline.com/common/oauth2/nativeclient?code="
+        ):
+            messagebox.showinfo(
+                "Error",
+                "Not a valid confirmation URL. Please try again.\n(link must start with: https://login.microsoftonline.com/common/oauth2/nativeclient?code=)",
+            )
+
         self.token_url = self.token_url_input.get("1.0", tk.END)
         self.root.destroy()
 

@@ -4,7 +4,6 @@ from configparser import ConfigParser
 import winshell
 from win32com import client
 from tkinter import messagebox
-import pythoncom
 
 
 class Application(tk.Frame):
@@ -280,20 +279,23 @@ class Application(tk.Frame):
             self.gcal_id.get("1.0", tk.END)[26:].strip()
             != "@group.calendar.google.com"
         ):
-            tk.messagebox.showinfo("Error", "Invalid google calendar ID")
+            messagebox.showinfo("Error", "Invalid google calendar ID")
             valid = False
-        if (
+        elif (
             self.ical_url.get("1.0", tk.END)[:46].strip()
             != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
         ):
-            tk.messagebox.showinfo("Error", "Invalid Kronox schema URL")
+            messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
-        if (
+        elif (
             self.discord_extra.get("1.0", tk.END)[:33].strip()
             != "https://discord.com/api/webhooks/"
             and self.discord_choice_var.get()
         ):
-            tk.messagebox.showinfo("Error", "Invalid discord webhook URL")
+            messagebox.showinfo("Error", "Invalid discord webhook URL")
+            valid = False
+        elif self.lang_var.get() == "1":
+            messagebox.showinfo("Error", "You must select a language")
             valid = False
 
         return valid
@@ -305,7 +307,10 @@ class Application(tk.Frame):
             self.ical_url.get("1.0", tk.END)[:46].strip()
             != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
         ):
-            tk.messagebox.showinfo("Error", "Invalid Kronox schema URL")
+            messagebox.showinfo("Error", "Invalid Kronox schema URL")
+            valid = False
+        elif self.lang_var.get() == "1":
+            messagebox.showinfo("Error", "You must select a language")
             valid = False
 
         return valid
