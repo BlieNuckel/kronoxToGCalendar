@@ -90,7 +90,10 @@ def creds():
 
     account = Account(credentials, auth_flow_type="public", protocol=protocol)
 
-    if not os.path.exists("o365_token.txt") and account.is_authenticated:
+    if (
+        not os.path.exists("kronoxToGCalendar/logic/o365_token.txt")
+        and account.is_authenticated
+    ):
         auth_url = connection.get_authorization_url(
             requested_scopes=scopes,
         )
