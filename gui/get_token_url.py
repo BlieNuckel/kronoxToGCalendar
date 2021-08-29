@@ -41,6 +41,7 @@ class Application(tk.Frame):
                 "Error",
                 "Not a valid confirmation URL. Please try again.\n(link must start with: https://login.microsoftonline.com/common/oauth2/nativeclient?code=)",
             )
+            return
 
         self.token_url = self.token_url_input.get("1.0", tk.END)
         self.root.destroy()
