@@ -9,7 +9,7 @@ from logic import event_handler
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
 if not os.path.isfile(CONFIG_PATH):
-    subprocess.call('"../batch/install_requirements.bat"')
+    subprocess.call('"batch/install_requirements.bat"')
 
 
 def main():
