@@ -92,7 +92,7 @@ def creds():
 
     if (
         not os.path.exists("kronoxToGCalendar/logic/o365_token.txt")
-        and account.is_authenticated
+        and not account.is_authenticated
     ):
         print("AUTH TRIGGERED")
         auth_url = connection.get_authorization_url(
