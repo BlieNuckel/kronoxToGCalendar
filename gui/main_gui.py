@@ -2,7 +2,7 @@ import tkinter as tk
 from gui import GUI
 
 root = tk.Tk()
-root.geometry("200x200")
+root.geometry("300x100")
 root.grid_columnconfigure(0, weight=1)
 root.grid_rowconfigure(3, weight=1)
 
