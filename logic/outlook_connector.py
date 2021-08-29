@@ -24,7 +24,6 @@ def config_loader():
     parser = ConfigParser(allow_no_value=True)
     parser.read(CONFIG_PATH)
 
-    platform = parser["SETTINGS"]["platform"]
     calendar_name = parser["SETTINGS"]["calendarId"]
     ical_url = parser["SETTINGS"]["icalURL"]
     lang = parser["SETTINGS"]["LANGUAGE"]
@@ -35,7 +34,7 @@ def config_loader():
         urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
     )
 
-    return calendar_name, ical_file, lang, platform
+    return calendar_name, ical_file, lang
 
 
 def insert_event(events, account, calendar_name):  # Adds events
