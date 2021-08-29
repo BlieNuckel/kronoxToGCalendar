@@ -94,6 +94,7 @@ def creds():
         not os.path.exists("kronoxToGCalendar/logic/o365_token.txt")
         and account.is_authenticated
     ):
+        print("AUTH TRIGGERED")
         auth_url = connection.get_authorization_url(
             requested_scopes=scopes,
         )
@@ -107,6 +108,7 @@ def creds():
 
         connection.request_token(token_url)
 
+    print("AUTH PASSED")
     account.is_authenticated
 
     return account
