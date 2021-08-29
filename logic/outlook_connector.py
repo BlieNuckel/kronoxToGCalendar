@@ -89,7 +89,12 @@ def creds():
         credentials, auth_flow_type="public", token_backend=token_backend
     )
 
-    account = Account(credentials, auth_flow_type="public", protocol=protocol)
+    account = Account(
+        credentials,
+        auth_flow_type="public",
+        protocol=protocol,
+        token_backend=token_backend,
+    )
 
     if (
         not os.path.exists("kronoxToGCalendar/logic/o365_token.txt")
