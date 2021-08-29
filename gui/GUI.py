@@ -113,9 +113,10 @@ class Application(tk.Frame):
         self.create_shared_widgets()
 
     def create_shared_widgets(self):
-        tk.Label(self.root, text="Icalendar URL (from kronox)").grid(
-            row=3, column=0
-        )
+        tk.Label(
+            self.root,
+            text="iCal file URL.\n(read the installation guide for details on where to find this)",
+        ).grid(row=3, column=0)
         self.ical_url = tk.Text(self.root, height=1, width=52)
         self.ical_url.grid(row=4, column=0)
 

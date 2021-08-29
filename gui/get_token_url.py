@@ -23,9 +23,10 @@ class Application(tk.Frame):
         self._token_url = ""
 
     def create_widgets(self):
-        tk.Label(self.root, text="Paste confirm URL here").grid(
-            row=1, column=0
-        )
+        tk.Label(
+            self.root,
+            text="After logging in with Microsoft, you will be\ndirected to a blank page. Copy the URL of that page and paste it here",
+        ).grid(row=1, column=0)
         self.token_url_input = tk.Text(self.root, height=1, width=52)
         self.token_url_input.grid(row=2, column=0)
 
