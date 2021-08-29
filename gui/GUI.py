@@ -2,8 +2,9 @@ import tkinter as tk
 import os
 from configparser import ConfigParser
 import winshell
-from win32com import client
+from win32com import shell
 from tkinter import messagebox
+import pythoncom
 
 
 class Application(tk.Frame):
@@ -207,15 +208,22 @@ class Application(tk.Frame):
             target = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
             )
-            icon = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
+            wrk_dir = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..\..")
             )
 
-            shell = client.Dispatch("WScript.Shell")
-            shortcut = shell.CreateShortCut(path)
-            shortcut.TargetPath = target
-            shortcut.IconLocation = icon
-            shortcut.save()
+            # This code is from this (https://stackoverflow.com/a/57243272) stack overflow answer, not my own
+            shortcut = pythoncom.CoCreateInstance(
+                shell.CLSID_ShellLink,
+                None,
+                pythoncom.CLSCTX_INPROC_SERVER,
+                shell.IID_IShellLink,
+            )
+
+            persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
+            shortcut.SetPath(target)
+            shortcut.SetWorkingDirectory(wrk_dir)
+            persist_file.save(path, 0)
 
         self.root.destroy()
 
@@ -251,17 +259,22 @@ class Application(tk.Frame):
             target = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
             )
-            icon = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
+            wrk_dir = os.path.abspath(
+                os.path.join(os.path.dirname(__file__), "..\..")
             )
 
-            shell = client.Dispatch("WScript.Shell")
-            shortcut = shell.CreateShortCut(path)
-            shortcut.TargetPath = target
-            shortcut.IconLocation = icon
-            shortcut.WorkingDirectory = target
-            shortcut.description = "Penis"
-            shortcut.save()
+            # This code is from this (https://stackoverflow.com/a/57243272) stack overflow answer, not my own
+            shortcut = pythoncom.CoCreateInstance(
+                shell.CLSID_ShellLink,
+                None,
+                pythoncom.CLSCTX_INPROC_SERVER,
+                shell.IID_IShellLink,
+            )
+
+            persist_file = shortcut.QueryInterface(pythoncom.IID_IPersistFile)
+            shortcut.SetPath(target)
+            shortcut.SetWorkingDirectory(wrk_dir)
+            persist_file.save(path, 0)
 
         self.root.destroy()
 
