@@ -19,7 +19,6 @@ SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 def config_loader():
     parser = ConfigParser(allow_no_value=True)
-
     parser.read(CONFIG_PATH)
 
     calendar_id = parser["SETTINGS"]["calendarId"]

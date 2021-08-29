@@ -22,6 +22,7 @@ SCOPES = ["basic", "calendar_all"]
 
 def config_loader():
     parser = ConfigParser(allow_no_value=True)
+    parser.read(CONFIG_PATH)
 
     platform = parser["SETTINGS"]["platform"]
     calendar_name = parser["SETTINGS"]["calendarId"]
