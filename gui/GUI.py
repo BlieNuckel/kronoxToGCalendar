@@ -251,7 +251,7 @@ class Application(tk.Frame):
             startup_folder = winshell.startup()
 
             path = os.path.join(
-                startup_folder, "kronoxToGCalendar_Startup.lnk"
+                startup_folder, "kronoxToGCalendar_startup.lnk"
             )
             target = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
