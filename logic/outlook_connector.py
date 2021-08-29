@@ -57,6 +57,7 @@ def insert_event(events, account, calendar_name):  # Adds events
 
 def clear_calendar(account, calendar_name):  # Clears calendar
     # Get current available events
+    account.is_authenticated
     schedule = account.schedule()
     calendar = schedule.get_calendar(calendar_name=calendar_name)
 
