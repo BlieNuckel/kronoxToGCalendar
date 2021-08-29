@@ -230,7 +230,7 @@ class Application(tk.Frame):
 
         parser = ConfigParser(allow_no_value=True)
         config_path = os.path.join(
-            os.path_abspath(os.path.join(os.path.dirname(__file__), "..")),
+            os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
             "config.ini",
         )
 
