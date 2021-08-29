@@ -309,6 +309,11 @@ class Application(tk.Frame):
         ):
             messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
+        elif self.gcal_id.get("1.0", tk.END) == "":
+            messagebox.showinfo(
+                "Error", "You must enter an Outlook calendar name"
+            )
+            valid = False
         elif self.lang_var.get() == "1":
             messagebox.showinfo("Error", "You must select a language")
             valid = False
