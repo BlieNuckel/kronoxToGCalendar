@@ -259,6 +259,9 @@ class Application(tk.Frame):
             shortcut = shell.CreateShortCut(path)
             shortcut.TargetPath = target
             shortcut.IconLocation = icon
+            shortcut.WorkingDirectory = os.path.join(
+                os.path.dirname(__file__), "..\.."
+            )
             shortcut.save()
 
         self.root.destroy()
