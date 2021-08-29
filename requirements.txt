@@ -7,7 +7,7 @@ winshell
 pywin32
 requests
 requests-oauthlib
-beatifulsoup4
+beautifulsoup4
 stringcase
 python-dateutil
 tzlocal
