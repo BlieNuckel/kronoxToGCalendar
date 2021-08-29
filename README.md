@@ -8,15 +8,17 @@ The first time the script is run it generates a config file based on several use
 
 During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORTANT TO READ BEFORE USING THE SCRIPT**
 
-## Google Calendar ID
+## Google Calendar ID / Outlook Calendar Name
 
 This is the ID that Google uses to know which calendar to modify and add the classes to. This can be found under the settings for a calendar in Google Calendar.
+
+In the case of Outlook the script accesses the calendar by its name. This option is case sensitive and only one calendar in your outlook should have the name.
 
 **IMPORTANT: Create a new calendar for the script to import into. The script deletes _all_ events before adding to avoid duplicates and as such the calendar tied to the script should _only_ be used for the script.**
 
 ## Kronox iCal file URL
 
-This is the URL for the download of the calendar information that can be found on the schedule site on Kronox. It can be found in the top left of the schedule and is labeled "Hämta iCal fil." Make sure to copy the URL by right-clicking and choosing "Copy link" instead of downloading the file manually.
+This is the URL for the download of the calendar information that can be found on the schedule site on [Kronox](https://kronox.hkr.se/). It can be found in the top left of the schedule and is labeled "Hämta iCal fil"/"Get iCal file." Make sure to copy the URL by right-clicking and choosing "Copy link" instead of downloading the file manually.
 
 ## Language
 
