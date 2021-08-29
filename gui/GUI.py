@@ -311,4 +311,6 @@ class Application(tk.Frame):
         return valid
 
     def open_read_me(self):
-        os.startfile("https://github.com/BlieNuckel/kronoxToGCalendar")
+        os.startfile(
+            "https://github.com/BlieNuckel/kronoxToGCalendar/blob/main/README.md#setup"
+        )
