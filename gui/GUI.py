@@ -275,12 +275,12 @@ class Application(tk.Frame):
     def valid_check_google(self):
         valid = True
 
-        # if (
-        #     self.gcal_id.get("1.0", tk.END)[26:].strip()
-        #     != "@group.calendar.google.com"
-        # ):
-        #     tk.messagebox.showinfo("Error", "Invalid google calendar ID")
-        #     valid = False
+        if (
+            self.gcal_id.get("1.0", tk.END)[26:].strip()
+            != "@group.calendar.google.com"
+        ):
+            tk.messagebox.showinfo("Error", "Invalid google calendar ID")
+            valid = False
         if (
             self.ical_url.get("1.0", tk.END)[:46].strip()
             != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
