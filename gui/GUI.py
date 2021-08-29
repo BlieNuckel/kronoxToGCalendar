@@ -259,7 +259,8 @@ class Application(tk.Frame):
             shortcut = shell.CreateShortCut(path)
             shortcut.TargetPath = target
             shortcut.IconLocation = icon
-            shortcut.WorkingDirectory = "c:/"
+            shortcut.WorkingDirectory = target
+            shortcut.description = "Penis"
             shortcut.save()
 
         self.root.destroy()
