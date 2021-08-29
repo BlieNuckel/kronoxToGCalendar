@@ -5,3 +5,10 @@ icalendar
 discord_webhook
 winshell
 pywin32
+requests
+requests-oauthlib
+beatifulsoup4
+stringcase
+python-dateutil
+tzlocal
+pytz
