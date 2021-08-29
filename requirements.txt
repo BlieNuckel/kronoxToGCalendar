@@ -12,3 +12,4 @@ stringcase
 python-dateutil
 tzlocal
 pytz
+O365
