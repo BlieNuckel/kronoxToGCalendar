@@ -38,7 +38,7 @@ class Application(tk.Frame):
     def create_google_widgets(self):
         tk.Label(
             self.root,
-            text="Google Calendar ID",
+            text="Google Calendar ID\n!WARNING! Ensure the calendar is only used for this script !WARNING!",
         ).grid(row=1, column=0)
         self.gcal_id = tk.Text(self.root, height=1, width=52)
         self.gcal_id.grid(row=2, column=0)
@@ -87,7 +87,7 @@ class Application(tk.Frame):
     def create_outlook_widgets(self):
         tk.Label(
             self.root,
-            text="Outlook calendar name (case sensitive)",
+            text="Outlook calendar name (case sensitive)\n!WARNING! Ensure the calendar is only used for this script !WARNING!",
         ).grid(row=1, column=0)
         self.gcal_id = tk.Text(self.root, height=1, width=52)
         self.gcal_id.grid(row=2, column=0)
