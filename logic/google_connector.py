@@ -14,7 +14,7 @@ CONFIG_PATH = os.path.join(
     "config.ini",
 )
 
-SCOPES = ["https://www.googleapis.com/auth/calendar.app.created"]
+SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 
 def config_loader():
