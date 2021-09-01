@@ -23,7 +23,9 @@ This is the URL for the download of the calendar information that can be found o
 For the HKR computer science class, below are your schedule links. You will still have to copy the link from the "Get iCal file" button as mentioned above:
 
 [1st year Swedish](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2021+35+100+NML+sv)
+
 [1st year English](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2021+35+100+NML+en)
+
 [2nd year English](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en)
 
 ## Language
