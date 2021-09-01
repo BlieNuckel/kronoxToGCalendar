@@ -4,6 +4,10 @@ The scripts function is to import any kronox schedule into a Google Calendar. Wh
 
 The first time the script is run it generates a config file based on several user inputs. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
 
+# Privacy Notice
+
+**This app _only_ uses its access to your Google Calendar for the purpose of deleting and adding events to the calendar which you specify upon setup. The program will never access any other files from your computer, other calendars from your google account, or other information it doesn't need. The only thing the app connects to is the specified Calendar on your google account and its events. Any events on the calendar are only deleted, and such no content in the events is ever read.**
+
 # Setup
 
 During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORTANT TO READ BEFORE USING THE SCRIPT**
@@ -55,7 +59,7 @@ To move on and give the script access,   follow these steps:
 
 After this the events should be added to the calendar specified in the setup process.
 
-**IMPORTANT: The script does _not_ access anything other than the one calendar you specify by the calendar ID and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed. The warning from Google is simply based on the fact that Google has not manually reviewed the script and confirmed that it is safe for use.**
+**IMPORTANT: The script does _not_ access anything other than the one calendar you specify by the calendar ID and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed.**
 
 ## Run Script On Startup
 
