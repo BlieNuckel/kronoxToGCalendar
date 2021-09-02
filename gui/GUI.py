@@ -132,7 +132,7 @@ class Application(tk.Frame):
         self.ical_url.grid(row=4, column=0)
 
         self.ical_options = tk.OptionMenu(
-            self.root, "self.ical_option_var", *OPTIONS.keys(), width=52
+            self.root, "self.ical_option_var", *OPTIONS.keys()
         )
         self.ical_options.grid(row=5, column=0)
         self.ical_option_var.trace_add(
