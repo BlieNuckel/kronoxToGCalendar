@@ -137,7 +137,7 @@ class Application(tk.Frame):
             self.root,
             variable=self.ical_option_var,
             value=OPTIONS["Select programme to get schedule"],
-            *OPTIONS["Select programme to get schedule"]
+            *OPTIONS.keys()
         )
         self.ical_options.grid(row=5, column=0)
         self.ical_option_var.trace_add(
