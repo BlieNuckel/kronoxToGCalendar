@@ -36,7 +36,7 @@ class Application(tk.Frame):
 
         self.ical_option_var = tk.StringVar(
             self.root,
-            OPTIONS[0],
+            OPTIONS.keys()[0],
             name="self.ical_option_var",
         )
 
