@@ -5,13 +5,21 @@ import winshell
 from win32com import client
 from tkinter import messagebox
 
+OPTIONS = {
+    "std": "Select programme to get schedule",
+    "Datasystemutveckling 2020": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2020+36+100+NML+sv",
+    "Datasystemutveckling 2021": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2021+35+100+NML+sv",
+    "Software Development 2020": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en",
+    "Software Development 2021": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2021+35+100+NML+en",
+}
+
 
 class Application(tk.Frame):
     def __init__(self, platform):
         self.root = tk.Tk()
         self.root.geometry("500x500")
         self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_rowconfigure(12, weight=1)
+        self.root.grid_rowconfigure(13, weight=1)
         super().__init__(self.root)
         self.master = self.root
         self.root.lift()
@@ -24,6 +32,10 @@ class Application(tk.Frame):
         )
         self.add_to_startup_var = tk.BooleanVar(
             self.root, False, name="self.add_to_startup_var"
+        )
+
+        self.ical_option_var = tk.StringVar(
+            self.root, OPTIONS["std"], name="self.ical_option_var"
         )
 
         func = self.get_platform(platform)
@@ -43,14 +55,14 @@ class Application(tk.Frame):
         self.gcal_id = tk.Text(self.root, height=1, width=52)
         self.gcal_id.grid(row=2, column=0)
 
-        tk.Label(self.root, text="Discord integration").grid(row=7, column=0)
+        tk.Label(self.root, text="Discord integration").grid(row=8, column=0)
         self.discord_choice = tk.Checkbutton(
             self.root,
             variable="self.discord_choice_var",
             offvalue=False,
             onvalue=True,
         )
-        self.discord_choice.grid(row=8, column=0)
+        self.discord_choice.grid(row=9, column=0)
         self.discord_choice_var.trace_add(
             "write",
             lambda var_name, var_index, operation: self.update_discord_active(),
@@ -80,7 +92,7 @@ class Application(tk.Frame):
             command=self.confirm_pressed_google,
         )
         self.confirm_button.pack()
-        confirm_button_frame.grid(row=12, column=0)
+        confirm_button_frame.grid(row=13, column=0)
 
         self.create_shared_widgets()
 
@@ -107,7 +119,7 @@ class Application(tk.Frame):
             command=self.confirm_pressed_outlook,
         )
         self.confirm_button.pack()
-        confirm_button_frame.grid(row=12, column=0)
+        confirm_button_frame.grid(row=13, column=0)
 
         self.create_shared_widgets()
 
@@ -119,8 +131,21 @@ class Application(tk.Frame):
         self.ical_url = tk.Text(self.root, height=1, width=52)
         self.ical_url.grid(row=4, column=0)
 
+        self.ical_options = tk.OptionMenu(
+            self.root,
+            "self.ical_option_var",
+            *OPTIONS.keys(),
+            height=1,
+            width=52
+        )
+        self.ical_options.grid(row=5, column=0)
+        self.ical_option_var.trace_add(
+            "write",
+            lambda var_name, var_index, operation: self.update_ical_option(),
+        )
+
         tk.Label(self.root, text="Language of the programme you attend").grid(
-            row=5, column=0
+            row=6, column=0
         )
         lang = {"English": "en", "Swedish": "sv"}
         frame = tk.Frame(self.root)
@@ -128,7 +153,7 @@ class Application(tk.Frame):
             tk.Radiobutton(
                 frame, text=text, variable=self.lang_var, value=value
             ).pack(side="left", ipady=5)
-        frame.grid(row=6, column=0)
+        frame.grid(row=7, column=0)
 
         self.startup_text = tk.StringVar()
         self.startup_text.set(
@@ -143,16 +168,19 @@ class Application(tk.Frame):
             offvalue=False,
             onvalue=True,
         )
-        self.add_to_startup_label.grid(row=10)
-        self.add_to_startup.grid(row=11)
+        self.add_to_startup_label.grid(row=11)
+        self.add_to_startup.grid(row=12)
         self.add_to_startup_var.trace_add(
             "write",
             lambda var_name, var_index, operation: self.update_add_startup_active(),
         )
 
+    def update_ical_option(self):
+        self.ical_url.insert(tk.END, OPTIONS[self.ical_option_var.get()])
+
     def update_discord_active(self):
         if self.discord_choice_var.get():
-            self.discord_extra_frame.grid(row=9, column=0)
+            self.discord_extra_frame.grid(row=10, column=0)
         else:
             self.discord_extra_frame.grid_forget()
 
