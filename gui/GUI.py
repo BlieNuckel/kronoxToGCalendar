@@ -311,6 +311,8 @@ class Application(tk.Frame):
         elif (
             self.ical_url.get("1.0", tk.END)[:46].strip()
             != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
+            and self.ical_url.get("1.0", tk.END)[:46].strip()
+            != "https://schema.hkr.se/setup/jsp/SchemaICAL.ics"
         ):
             messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
@@ -333,6 +335,8 @@ class Application(tk.Frame):
         if (
             self.ical_url.get("1.0", tk.END)[:46].strip()
             != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
+            and self.ical_url.get("1.0", tk.END)[:46].strip()
+            != "https://schema.hkr.se/setup/jsp/SchemaICAL.ics"
         ):
             messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
