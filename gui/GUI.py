@@ -6,7 +6,7 @@ from win32com import client
 from tkinter import messagebox
 
 OPTIONS = {
-    "std": "Select programme to get schedule",
+    "Select programme to get schedule": "",
     "Datasystemutveckling 2020": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2020+36+100+NML+sv",
     "Datasystemutveckling 2021": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2021+35+100+NML+sv",
     "Software Development 2020": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en",
@@ -35,7 +35,9 @@ class Application(tk.Frame):
         )
 
         self.ical_option_var = tk.StringVar(
-            self.root, OPTIONS["std"], name="self.ical_option_var"
+            self.root,
+            OPTIONS["Select programme to get schedule"],
+            name="self.ical_option_var",
         )
 
         func = self.get_platform(platform)
@@ -132,7 +134,7 @@ class Application(tk.Frame):
         self.ical_url.grid(row=4, column=0)
 
         self.ical_options = tk.OptionMenu(
-            self.root, "self.ical_option_var", *OPTIONS.keys()
+            self.root, variable=self.ical_option_var, *OPTIONS.keys()
         )
         self.ical_options.grid(row=5, column=0)
         self.ical_option_var.trace_add(
