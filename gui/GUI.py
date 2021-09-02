@@ -39,6 +39,7 @@ class Application(tk.Frame):
             OPTIONS["Select programme to get schedule"],
             name="self.ical_option_var",
         )
+        self.ical_option_var.set(OPTIONS["Select programme to get schedule"])
 
         func = self.get_platform(platform)
         func()
@@ -174,6 +175,7 @@ class Application(tk.Frame):
         )
 
     def update_ical_option(self):
+        self.ical_url.delete("1.0", tk.END)
         self.ical_url.insert(tk.END, OPTIONS[self.ical_option_var.get()])
 
     def update_discord_active(self):
