@@ -36,10 +36,9 @@ class Application(tk.Frame):
 
         self.ical_option_var = tk.StringVar(
             self.root,
-            OPTIONS["Select programme to get schedule"],
+            OPTIONS[0],
             name="self.ical_option_var",
         )
-        self.ical_option_var.set(OPTIONS["Select programme to get schedule"])
 
         func = self.get_platform(platform)
         func()
@@ -135,10 +134,7 @@ class Application(tk.Frame):
         self.ical_url.grid(row=4, column=0)
 
         self.ical_options = tk.OptionMenu(
-            self.root,
-            self.ical_option_var,
-            *OPTIONS.keys(),
-            value=OPTIONS["Select programme to get schedule"]
+            self.root, self.ical_option_var, *OPTIONS.keys()
         )
         self.ical_options.grid(row=5, column=0)
         self.ical_option_var.trace_add(
