@@ -1,11 +1,12 @@
 import pickle
 import os.path
+from typing import List
 import urllib
 from configparser import ConfigParser
 import ssl
 import requests
 from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
+from googleapiclient.discovery import Resource, build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from discord_webhook import DiscordWebhook
 
@@ -17,7 +18,9 @@ CONFIG_PATH = os.path.join(
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 
-def config_loader():
+def config_loader() -> tuple[str, str, str, str]:
+    """Read and return values from config file."""
+
     parser = ConfigParser(allow_no_value=True)
     parser.read(CONFIG_PATH)
 
@@ -39,7 +42,10 @@ def config_loader():
     return calendar_id, ical_file, lang, webhook_url
 
 
-def insert_event(events, service, calendar_id, webhook_url):  # Adds events
+def insert_event(
+    events: List[str], service: Resource, calendar_id: str, webhook_url: str
+) -> None:
+    """Add events to calendar."""
 
     global error_set
     error_set = set()
@@ -58,18 +64,16 @@ def insert_event(events, service, calendar_id, webhook_url):  # Adds events
         if error_count > 0:
             joinedString = ", ".join([str(i) for i in error_set])
             content = (
-                f"{error_count} errors, following errors found: "
-                + joinedString
+                f"{error_count} errors, following errors found: " + joinedString
             )
             DiscordWebhook(url=webhook_url, content=content).execute()
 
 
-def clear_calendar(service, calendar_id):  # Clears calendar
-    # Get current available events
+def clear_calendar(service: Resource, calendar_id: str) -> None:
+    """Clears calendar."""
+
     events = (
-        service.events()
-        .list(calendarId=calendar_id, singleEvents=True)
-        .execute()
+        service.events().list(calendarId=calendar_id, singleEvents=True).execute()
     )
 
     batch = service.new_batch_http_request()
@@ -82,7 +86,9 @@ def clear_calendar(service, calendar_id):  # Clears calendar
     batch.execute()
 
 
-def cb_insert_event(request_id, response, e):  # Callback from adding events
+def cb_insert_event(request_id, response, e) -> None:
+    """Callback from adding events"""
+
     global discord_integration
     if discord_integration == "y":
         if e:
@@ -93,7 +99,9 @@ def cb_insert_event(request_id, response, e):  # Callback from adding events
             error_count += 1
 
 
-def creds():
+def creds() -> Resource:
+    """Load or obtain credentials for user."""
+
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first

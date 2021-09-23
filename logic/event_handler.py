@@ -1,3 +1,4 @@
+from typing import List
 from icalendar import Calendar
 import datetime as dt
 import re
@@ -7,7 +8,7 @@ PATTERN2 = re.compile(",+")
 PATTERN3 = re.compile(r"(?:(?<=\s)|^)(?:[a-z]|\d+)", re.I)
 
 
-def parse_ics(ics):  # Parses ics file into list of event dicts
+def parse_ics(ics: str) -> List[str]:  # Parses ics file into list of event dicts
 
     events = []
     ical = Calendar.from_ical(ics)
@@ -53,7 +54,7 @@ def parse_ics(ics):  # Parses ics file into list of event dicts
     return events
 
 
-def name_format(name):
+def name_format(name: str) -> str:
 
     split_name = None
     # Split name and format SUMMARY in readable way
@@ -71,11 +72,7 @@ def name_format(name):
         else:
             if len(split_name[1].split(" ")) == 1:
                 return (
-                    split_name[1]
-                    + " : "
-                    + split_name[3]
-                    + " : "
-                    + split_name[2]
+                    split_name[1] + " : " + split_name[3] + " : " + split_name[2]
                 )
             else:
                 return (
@@ -85,13 +82,12 @@ def name_format(name):
                     + " : "
                     + split_name[2]
                 )
-
     elif name[0] == "S":
         split_name = re.split("Sign: | Moment: | Program: ", name)
         return split_name[2] + " : " + split_name[1]
 
 
-def event_edit(event_list, lang):
+def event_edit(event_list: List[str], lang: str) -> List[str]:
     del_events = []  # List for events to be deleted
 
     for i in event_list:  # Loop through each event

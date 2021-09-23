@@ -1,7 +1,11 @@
 import os.path
+from typing import List
 import urllib
 from configparser import ConfigParser
 import webbrowser
+
+from O365.calendar import Schedule
+from O365.calendar import Calendar
 from gui import get_token_url
 import datetime
 import ssl
@@ -20,8 +24,10 @@ CONFIG_PATH = os.path.join(
 SCOPES = ["basic", "calendar_all"]
 
 
-def config_loader():
-    parser = ConfigParser(allow_no_value=True)
+def config_loader() -> tuple(str, str, str):
+    """Read and return values from config file."""
+
+    parser: ConfigParser = ConfigParser(allow_no_value=True)
     parser.read(CONFIG_PATH)
 
     calendar_name = parser["SETTINGS"]["calendarId"]
@@ -37,10 +43,11 @@ def config_loader():
     return calendar_name, ical_file, lang
 
 
-def insert_event(events, account, calendar_name):  # Adds events
+def insert_event(events: List[str], account: Account, calendar_name: str) -> None:
+    """Add events to calendar."""
 
-    schedule = account.schedule()
-    calendar = schedule.get_calendar(calendar_name=calendar_name)
+    schedule: Schedule = account.schedule()
+    calendar: Calendar = schedule.get_calendar(calendar_name=calendar_name)
 
     for event in events:
         new_event = calendar.new_event()
@@ -55,8 +62,9 @@ def insert_event(events, account, calendar_name):  # Adds events
         new_event.save()
 
 
-def clear_calendar(account, calendar_name):  # Clears calendar
-    # Get current available events
+def clear_calendar(account: Account, calendar_name: str) -> None:
+    """Get current available events and delete them."""
+
     schedule = account.schedule()
     calendar = schedule.get_calendar(calendar_name=calendar_name)
 
@@ -73,21 +81,18 @@ def clear_calendar(account, calendar_name):  # Clears calendar
         event.delete()
 
 
-def creds():
+def creds() -> Account:
+    """Load or obtain credentials for user."""
 
     credentials = "8da780f3-5ea0-4d97-ab13-9e7976370624"
-
     protocol = MSGraphProtocol(timezone="Europe/Stockholm")
     scopes = protocol.get_scopes_for(SCOPES)
-
     token_backend = FileSystemTokenBackend(
         token_path=os.path.dirname(__file__), token_filename="o365_token.txt"
     )
-
     connection = Connection(
         credentials, auth_flow_type="public", token_backend=token_backend
     )
-
     account = Account(
         credentials,
         auth_flow_type="public",
