@@ -74,9 +74,7 @@ class Application(tk.Frame):
         tk.Label(self.discord_extra_frame, text="Discord Webhook").grid(
             row=1, column=0
         )
-        self.discord_extra = tk.Text(
-            self.discord_extra_frame, height=1, width=52
-        )
+        self.discord_extra = tk.Text(self.discord_extra_frame, height=1, width=52)
         self.discord_extra.grid(row=2, column=0)
 
         confirm_button_frame = tk.Frame(self.root)
@@ -229,9 +227,7 @@ class Application(tk.Frame):
         if self.add_to_startup_var.get():
             startup_folder = winshell.startup()
 
-            path = os.path.join(
-                startup_folder, "kronoxToGCalendar_Startup.lnk"
-            )
+            path = os.path.join(startup_folder, "kronoxToGCalendar_Startup.lnk")
             target = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
             )
@@ -277,9 +273,7 @@ class Application(tk.Frame):
         if self.add_to_startup_var.get():
             startup_folder = winshell.startup()
 
-            path = os.path.join(
-                startup_folder, "kronoxToGCalendar_startup.lnk"
-            )
+            path = os.path.join(startup_folder, "kronoxToGCalendar_startup.lnk")
             target = os.path.abspath(
                 os.path.join(os.path.dirname(__file__), "..\..", "run.vbs")
             )
@@ -341,9 +335,7 @@ class Application(tk.Frame):
             messagebox.showinfo("Error", "Invalid Kronox schema URL")
             valid = False
         elif self.gcal_id.get("1.0", tk.END) == "":
-            messagebox.showinfo(
-                "Error", "You must enter an Outlook calendar name"
-            )
+            messagebox.showinfo("Error", "You must enter an Outlook calendar name")
             valid = False
         elif self.lang_var.get() == "1":
             messagebox.showinfo("Error", "You must select a language")

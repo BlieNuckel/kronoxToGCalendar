@@ -8,3 +8,4 @@ discordErrorNotifier.py
 __pycache__
 .venv
 update.py
+.vscode
