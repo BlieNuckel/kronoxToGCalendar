@@ -53,15 +53,13 @@ def clear_calendar(service: Resource, calendar_id: str) -> None:
 
 def creds() -> Resource:
     """Load or obtain credentials for user."""
-
+    token_path = os.path.join(os.path.dirname(__file__), "token.pickle")
     creds = None
     # The file token.pickle stores the user's access and refresh tokens, and is
     # created automatically when the authorization flow completes for the first
     # time.
-    if os.path.exists(os.path.join(os.path.dirname(__file__), "token.pickle")):
-        with open(
-            os.path.join(os.path.dirname(__file__), "token.pickle"), "rb"
-        ) as token:
+    if os.path.exists(token_path):
+        with open(token_path, "rb") as token:
             creds = pickle.load(token)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
@@ -74,9 +72,7 @@ def creds() -> Resource:
             flow = InstalledAppFlow.from_client_config(client, SCOPES)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
-        with open(
-            os.path.join(os.path.dirname(__file__), "token.pickle"), "wb"
-        ) as token:
+        with open(token_path, "wb") as token:
             pickle.dump(creds, token)
 
     return build("calendar", "v3", credentials=creds)
