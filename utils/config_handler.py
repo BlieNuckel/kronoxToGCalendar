@@ -2,6 +2,7 @@ from configparser import ConfigParser
 import os
 import ssl
 import urllib.request
+from utils.enums import Platform
 
 CONFIG_PATH = os.path.join(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
@@ -43,7 +44,7 @@ def set_section(val: str) -> str:
         parser.write(config)
 
 
-def get_value(key: str) -> str:
+def get_value(key: str):
     return parser.get("SETTINGS", key)
 
 

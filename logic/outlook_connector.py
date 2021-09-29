@@ -20,11 +20,11 @@ CONFIG_PATH = os.path.join(
 SCOPES = ["basic", "calendar_all"]
 
 
-def insert_event(events: List[str], account: Account, calendar_name: str) -> None:
+def insert_event(events: List[str], account: Account, calendar_id: str) -> None:
     """Add events to calendar."""
 
     schedule = account.schedule()
-    calendar = schedule.get_calendar(calendar_name=calendar_name)
+    calendar = schedule.get_calendar(calendar_id=calendar_id)
 
     for event in events:
         new_event = calendar.new_event()
@@ -45,14 +45,14 @@ def create_default_calendar(account: Account) -> None:
     calendar = schedule.new_calendar("CLASSES")
 
     id = calendar.calendar_id
-    ConfigHandler.set_value(key="calendarId", val=id)
+    config_handler.set_value(key="calendarId", val=id)
 
 
-def clear_calendar(account: Account, calendar_name: str) -> None:
+def clear_calendar(account: Account, calendar_id: str) -> None:
     """Get current available events and delete them."""
 
     schedule = account.schedule()
-    calendar = schedule.get_calendar(calendar_name=calendar_name)
+    calendar = schedule.get_calendar(calendar_id=calendar_id)
 
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)

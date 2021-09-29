@@ -12,7 +12,10 @@ CONFIG_PATH = os.path.join(
     "config.ini",
 )
 
-SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
+SCOPES = [
+    "https://www.googleapis.com/auth/calendar.events",
+    "https://www.googleapis.com/auth/calendar",
+]
 
 
 def insert_event(events: List[str], service: Resource, calendar_id: str) -> None:

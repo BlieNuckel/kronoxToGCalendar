@@ -16,22 +16,25 @@ from logic import event_handler
 
 def main():
     """Get config, initiate for chosen platform."""
-
-    while config_handler.check_config() is None:
+    init_run = False
+    if config_handler.check_config() is None:
+        init_run = True
         gui.main_gui.run()
 
     platform = config_handler.get_value("platform")
-    run_platform(platform)
+    run_platform(platform, init_run)
 
 
-def run_platform(platform: Platform) -> None:
+def run_platform(platform: str, init_run: bool) -> None:
     """Run flow dependent on platform."""
 
-    if platform == Platform.OUTLOOK:
+    if platform == Platform.OUTLOOK.value:
         (ical_file, lang) = config_handler.load_config()
 
         account = outlook_connector.creds()
-        outlook_connector.create_default_calendar(account)
+
+        if init_run:
+            outlook_connector.create_default_calendar(account)
 
         calendar_id = config_handler.get_value("calendarId")
         event_list = event_handler.parse_ics(ical_file)
@@ -41,14 +44,13 @@ def run_platform(platform: Platform) -> None:
 
         outlook_connector.insert_event(parsed_event_list, account, calendar_id)
 
-    elif platform == Platform.GOOGLE:
+    elif platform == Platform.GOOGLE.value:
         (ical_file, lang) = config_handler.load_config()
 
-        print("started google flow")
         service = google_connector.creds()
-        print("service created: ", service)
-        google_connector.create_default_calendar(service)
-        print("calendar created")
+        if init_run:
+            google_connector.create_default_calendar(service)
+
         calendar_id = config_handler.get_value("calendarId")
         event_list = event_handler.parse_ics(ical_file)
         parsed_event_list = event_handler.event_edit(event_list, lang)
