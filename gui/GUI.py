@@ -1,6 +1,6 @@
 import tkinter as tk
 import os
-
+import utils.gui_valid_check as gui_valid_check
 import utils.gui_open_readme as gui_open_readme
 from utils.config_handler import ConfigHandler
 from utils.enums import Platform
@@ -47,6 +47,23 @@ class Application(tk.Frame):
             self.create_widgets(Platform.OUTLOOK)
 
     def create_widgets(self, platform: Platform):
+        confirm_button_frame = tk.Frame(self.root)
+
+        self.read_me_button = tk.Button(
+            confirm_button_frame,
+            text="Installation Guide",
+            command=gui_open_readme.open_read_me,
+        )
+        self.read_me_button.pack()
+
+        self.confirm_button = tk.Button(
+            confirm_button_frame,
+            text="Confirm",
+            command=lambda: self.confirm_pressed(platform),
+        )
+        self.confirm_button.pack()
+        confirm_button_frame.grid(row=13, column=0)
+
         tk.Label(
             self.root,
             text="iCal file URL\n(read the installation guide for details on where to find this)",
@@ -74,29 +91,11 @@ class Application(tk.Frame):
             ).pack(side="left", ipady=5)
         frame.grid(row=7, column=0)
 
-        confirm_button_frame = tk.Frame(self.root)
-
-        self.read_me_button = tk.Button(
-            confirm_button_frame,
-            text="Installation Guide",
-            command=gui_open_readme.open_read_me,
-        )
-        self.read_me_button.pack()
-
-        self.confirm_button = tk.Button(
-            confirm_button_frame,
-            text="Confirm",
-            command=self.confirm_pressed(platform),
-        )
-        self.confirm_button.pack()
-        confirm_button_frame.grid(row=13, column=0)
-
     def update_ical_option(self):
         self.ical_url.delete("1.0", tk.END)
         self.ical_url.insert(tk.END, OPTIONS[self.ical_option_var.get()])
 
     def confirm_pressed(self, platform: Platform):
-        import utils.gui_valid_check as gui_valid_check
 
         if not gui_valid_check.valid_check(self.ical_url, self.lang_var):
             return
