@@ -46,7 +46,9 @@ class ConfigHandler(metaclass=Singleton):
         return ical_file, lang
 
     def set_section(self, val: str) -> str:
-        self.parser.add_section(val)
+        with open(CONFIG_PATH, "w") as config:
+            self.parser.add_section(val)
+            self.parser.write(config)
 
     def get_value(self, key: str) -> str:
         return self.parser.get("SETTINGS", key)
