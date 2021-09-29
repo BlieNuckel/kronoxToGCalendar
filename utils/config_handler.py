@@ -20,13 +20,14 @@ class Singleton(type):
 
 class ConfigHandler(metaclass=Singleton):
 
-    parser = None
+    parser = ConfigParser()
+    parser.read(CONFIG_PATH)
 
     def check_config(self) -> ConfigParser:
         """Check for and read config file else run gui."""
 
         if os.path.isfile(CONFIG_PATH):
-            self.parser = ConfigParser(allow_no_value=True)
+            self.parser.read()
             return self.parser
 
         return None
