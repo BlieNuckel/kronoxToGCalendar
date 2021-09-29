@@ -31,7 +31,7 @@ class ConfigHandler(metaclass=Singleton):
 
         return None
 
-    def load_config(self) -> tuple:
+    def load_config(self) -> tuple[str, str, str]:
         """Read and return values from config file."""
 
         ical_url = self.parser["SETTINGS"]["icalURL"]
