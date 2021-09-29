@@ -24,7 +24,7 @@ CONFIG_PATH = os.path.join(
 SCOPES = ["basic", "calendar_all"]
 
 
-def config_loader() -> tuple(str, str, str):
+def config_loader() -> tuple[str, str, str]:
     """Read and return values from config file."""
 
     parser: ConfigParser = ConfigParser(allow_no_value=True)
