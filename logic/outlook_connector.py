@@ -1,7 +1,7 @@
 import os.path
 from typing import List
 import webbrowser
-from utils.config_handler import ConfigHandler
+import utils.config_handler as config_handler
 
 from gui import get_token_url
 import datetime
@@ -17,7 +17,6 @@ CONFIG_PATH = os.path.join(
     "config.ini",
 )
 
-config_handler = ConfigHandler()
 SCOPES = ["basic", "calendar_all"]
 
 

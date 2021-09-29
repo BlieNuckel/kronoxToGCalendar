@@ -2,7 +2,7 @@ import pickle
 import os.path
 from typing import List
 import requests
-from utils.config_handler import ConfigHandler
+import utils.config_handler as config_handler
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import Resource, build
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -12,7 +12,6 @@ CONFIG_PATH = os.path.join(
     "config.ini",
 )
 
-config_handler = ConfigHandler()
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 
@@ -32,7 +31,7 @@ def create_default_calendar(service: Resource):
 
     created_calendar = service.calendars().insert(body=calendar_data).execute()
     id = created_calendar["id"]
-    ConfigHandler.set_value(key="calendarId", val=id)
+    config_handler.set_value(key="calendarId", val=id)
 
 
 def clear_calendar(service: Resource, calendar_id: str) -> None:

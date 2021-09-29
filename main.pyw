@@ -1,6 +1,6 @@
 import os
 import subprocess
-from utils.config_handler import ConfigHandler
+import utils.config_handler as config_handler
 import gui.main_gui
 from utils.enums import Platform
 
@@ -12,8 +12,6 @@ if not os.path.isfile(CONFIG_PATH):
 from logic import outlook_connector
 from logic import google_connector
 from logic import event_handler
-
-config_handler = ConfigHandler()
 
 
 def main():
@@ -46,9 +44,11 @@ def run_platform(platform: Platform) -> None:
     elif platform == Platform.GOOGLE:
         (ical_file, lang) = config_handler.load_config()
 
+        print("started google flow")
         service = google_connector.creds()
+        print("service created: ", service)
         google_connector.create_default_calendar(service)
-
+        print("calendar created")
         calendar_id = config_handler.get_value("calendarId")
         event_list = event_handler.parse_ics(ical_file)
         parsed_event_list = event_handler.event_edit(event_list, lang)

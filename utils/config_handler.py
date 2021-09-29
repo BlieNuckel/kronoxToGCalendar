@@ -9,51 +9,45 @@ CONFIG_PATH = os.path.join(
 )
 
 
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        return cls._instances[cls]
+parser = ConfigParser()
 
 
-class ConfigHandler(metaclass=Singleton):
+def check_config() -> ConfigParser:
+    """Check for and read config file else run gui."""
 
-    parser = ConfigParser()
+    if os.path.isfile(CONFIG_PATH):
+        parser.read(CONFIG_PATH)
+        return parser
 
-    def check_config(self) -> ConfigParser:
-        """Check for and read config file else run gui."""
+    return None
 
-        if os.path.isfile(CONFIG_PATH):
-            self.parser.read(CONFIG_PATH)
-            return self.parser
 
-        return None
+def load_config() -> tuple[str, str, str]:
+    """Read and return values from config file."""
 
-    def load_config(self) -> tuple[str, str, str]:
-        """Read and return values from config file."""
+    ical_url = parser["SETTINGS"]["icalURL"]
+    lang = parser["SETTINGS"]["LANGUAGE"]
+    myssl = ssl.create_default_context()
+    myssl.check_hostname = False
+    myssl.verify_mode = ssl.CERT_NONE
+    ical_file = (
+        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+    )
 
-        ical_url = self.parser["SETTINGS"]["icalURL"]
-        lang = self.parser["SETTINGS"]["LANGUAGE"]
-        myssl = ssl.create_default_context()
-        myssl.check_hostname = False
-        myssl.verify_mode = ssl.CERT_NONE
-        ical_file = (
-            urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
-        )
+    return ical_file, lang
 
-        return ical_file, lang
 
-    def set_section(self, val: str) -> str:
-        with open(CONFIG_PATH, "w") as config:
-            self.parser.add_section(val)
-            self.parser.write(config)
+def set_section(val: str) -> str:
+    with open(CONFIG_PATH, "w") as config:
+        parser.add_section(val)
+        parser.write(config)
 
-    def get_value(self, key: str) -> str:
-        return self.parser.get("SETTINGS", key)
 
-    def set_value(self, key: str, val: str) -> None:
-        with open(CONFIG_PATH, "w") as config:
-            self.parser.set("SETTINGS", key, val)
-            self.parser.write(config)
+def get_value(key: str) -> str:
+    return parser.get("SETTINGS", key)
+
+
+def set_value(key: str, val: str) -> None:
+    with open(CONFIG_PATH, "w") as config:
+        parser.set("SETTINGS", key, val)
+        parser.write(config)
