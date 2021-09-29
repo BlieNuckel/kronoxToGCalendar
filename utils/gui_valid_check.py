@@ -8,7 +8,7 @@ def valid_check(ical_url: tk.Text, lang_var: tk.StringVar):
     if (
         ical_url.get("1.0", tk.END)[:46].strip()
         != "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics"
-        or ical_url.get("1.0", tk.END)[:46].strip()
+        and ical_url.get("1.0", tk.END)[:46].strip()
         != "https://schema.hkr.se/setup/jsp/SchemaICAL.ics"
     ):
         messagebox.showinfo("Error", "Invalid Kronox schema URL")
