@@ -1,8 +1,9 @@
 from tkinter import messagebox
 import tkinter as tk
 
-if __name__ == "__main__":
-    pass
+
+def main():
+    return
 
 
 def valid_check(ical_url: tk.Text, lang_var: tk.StringVar):
@@ -21,3 +22,7 @@ def valid_check(ical_url: tk.Text, lang_var: tk.StringVar):
         valid = False
 
     return valid
+
+
+if __name__ == "__main__":
+    main()
