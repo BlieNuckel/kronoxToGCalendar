@@ -1,7 +1,7 @@
 import tkinter as tk
 import os
-from utils.gui_valid_check import valid_check
-from utils.gui_open_readme import open_read_me
+import utils.gui_valid_check as gui_valid_check
+import utils.gui_open_readme as gui_open_readme
 from utils.config_handler import ConfigHandler
 from utils.enums import Platform
 import winshell
@@ -79,7 +79,7 @@ class Application(tk.Frame):
         self.read_me_button = tk.Button(
             confirm_button_frame,
             text="Installation Guide",
-            command=open_read_me,
+            command=gui_open_readme.open_read_me,
         )
         self.read_me_button.pack()
 
@@ -96,7 +96,7 @@ class Application(tk.Frame):
         self.ical_url.insert(tk.END, OPTIONS[self.ical_option_var.get()])
 
     def confirm_pressed(self, platform: Platform):
-        if not valid_check(self.ical_url, self.lang_var):
+        if not gui_valid_check.valid_check(self.ical_url, self.lang_var):
             return
 
         icalURL = self.ical_url.get("1.0", tk.END)
