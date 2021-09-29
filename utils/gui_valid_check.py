@@ -3,6 +3,8 @@ import tkinter as tk
 
 
 def valid_check(ical_url: tk.Text, lang_var: tk.StringVar):
+    """Ensure that given ical URl is valid and that a language was selected."""
+
     valid = True
 
     if (

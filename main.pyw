@@ -16,6 +16,7 @@ from logic import event_handler
 
 def main():
     """Get config, initiate for chosen platform."""
+
     init_run = False
     if config_handler.check_config() is None:
         init_run = True
