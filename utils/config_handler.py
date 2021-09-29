@@ -49,7 +49,7 @@ class ConfigHandler(metaclass=Singleton):
         self.parser.add_section(val)
 
     def get_value(self, key: str) -> str:
-        return self.parser["SETTINGS"][key]
+        return self.parser.get("SETTINGS", key)
 
     def set_value(self, key: str, val: str) -> None:
         with open(CONFIG_PATH, "w") as config:
