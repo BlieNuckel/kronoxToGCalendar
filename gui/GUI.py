@@ -104,7 +104,7 @@ class Application(tk.Frame):
         lang = self.lang_var.get()
 
         config_handler.set_section("SETTINGS")
-        config_handler.set_value("platform", platform)
+        config_handler.set_value("platform", platform.value)
         config_handler.set_value("icalURL", icalURL)
         config_handler.set_value("language", lang)
 
