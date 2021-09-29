@@ -38,14 +38,13 @@ class Application(tk.Frame):
             name="self.ical_option_var",
         )
 
-        func = self.get_platform(platform)
-        func()
+        self.start_platform(platform)
 
-    def get_platform(self, platform):
+    def start_platform(self, platform) -> Platform:
         if platform == "google":
-            return self.create_widgets(Platform.GOOGLE)
+            self.create_widgets(Platform.GOOGLE)
         elif platform == "outlook":
-            return self.create_widgets(Platform.OUTLOOK)
+            self.create_widgets(Platform.OUTLOOK)
 
     def create_widgets(self, platform: Platform):
         tk.Label(
