@@ -1,6 +1,9 @@
 from tkinter import messagebox
 import tkinter as tk
 
+if __name__ == "__main__":
+    pass
+
 
 def valid_check(ical_url: tk.Text, lang_var: tk.StringVar):
     valid = True
