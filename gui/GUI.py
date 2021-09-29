@@ -2,7 +2,7 @@ import tkinter as tk
 import os
 import utils.gui_valid_check as gui_valid_check
 import utils.gui_open_readme as gui_open_readme
-from utils.config_handler import ConfigHandler
+import utils.config_handler as config_handler
 from utils.enums import Platform
 import winshell
 from win32com import client
@@ -14,8 +14,6 @@ OPTIONS = {
     "Software Development 2020": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en",
     "Software Development 2021": "https://kronox.hkr.se/setup/jsp/SchemaICAL.ics?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2021+35+100+NML+en",
 }
-
-config_handler = ConfigHandler()
 
 
 class Application(tk.Frame):
