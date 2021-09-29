@@ -1,6 +1,5 @@
 import tkinter as tk
 import os
-import utils.gui_valid_check as gui_valid_check
 import utils.gui_open_readme as gui_open_readme
 from utils.config_handler import ConfigHandler
 from utils.enums import Platform
@@ -96,8 +95,8 @@ class Application(tk.Frame):
         self.ical_url.insert(tk.END, OPTIONS[self.ical_option_var.get()])
 
     def confirm_pressed(self, platform: Platform):
-        if not gui_valid_check.valid_check(self.ical_url, self.lang_var):
-            return
+        # if not gui_valid_check.valid_check(self.ical_url, self.lang_var):
+        #     return
 
         icalURL = self.ical_url.get("1.0", tk.END)
         lang = self.lang_var.get()
