@@ -31,9 +31,6 @@ class Application(tk.Frame):
         self.root.after_idle(self.root.attributes, "-topmost", False)
 
         self.lang_var = tk.StringVar(self.root, "1")
-        self.add_to_startup_var = tk.BooleanVar(
-            self.root, False, name="self.add_to_startup_var"
-        )
 
         self.ical_option_var = tk.StringVar(
             self.root,
