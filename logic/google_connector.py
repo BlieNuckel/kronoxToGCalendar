@@ -1,72 +1,38 @@
 import pickle
 import os.path
 from typing import List
-import urllib
-from configparser import ConfigParser
-import ssl
 import requests
+from utils.config_handler import ConfigHandler
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import Resource, build
 from google_auth_oauthlib.flow import InstalledAppFlow
-from discord_webhook import DiscordWebhook
 
 CONFIG_PATH = os.path.join(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "..")),
     "config.ini",
 )
 
+config_handler = ConfigHandler()
 SCOPES = ["https://www.googleapis.com/auth/calendar.events"]
 
 
-def config_loader() -> tuple[str, str, str, str]:
-    """Read and return values from config file."""
-
-    parser = ConfigParser(allow_no_value=True)
-    parser.read(CONFIG_PATH)
-
-    calendar_id = parser["SETTINGS"]["calendarId"]
-    ical_url = parser["SETTINGS"]["icalURL"]
-    lang = parser["SETTINGS"]["LANGUAGE"]
-    global discord_integration
-    discord_integration = parser["SETTINGS"]["discordIntegration"]
-    webhook_url = None
-    if discord_integration == "y":
-        webhook_url = parser["DISCORD_SETTINGS"]["webhook"]
-    myssl = ssl.create_default_context()
-    myssl.check_hostname = False
-    myssl.verify_mode = ssl.CERT_NONE
-    ical_file = (
-        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
-    )
-
-    return calendar_id, ical_file, lang, webhook_url
-
-
-def insert_event(
-    events: List[str], service: Resource, calendar_id: str, webhook_url: str
-) -> None:
+def insert_event(events: List[str], service: Resource, calendar_id: str) -> None:
     """Add events to calendar."""
 
-    global error_set
-    error_set = set()
-    global error_count
-    error_count = 0
-
-    batch = service.new_batch_http_request(callback=cb_insert_event)
+    batch = service.new_batch_http_request()
 
     # Add each event to batch
     for i, event in enumerate(events):
         batch.add(service.events().insert(calendarId=calendar_id, body=event))
     batch.execute()
 
-    if discord_integration == "y":
 
-        if error_count > 0:
-            joinedString = ", ".join([str(i) for i in error_set])
-            content = (
-                f"{error_count} errors, following errors found: " + joinedString
-            )
-            DiscordWebhook(url=webhook_url, content=content).execute()
+def create_default_calendar(service: Resource):
+    calendar_data = {"summary": "CLASSES", "timeZone": "Europe/Copenhagen"}
+
+    created_calendar = service.calendars().insert(body=calendar_data).execute()
+    id = created_calendar["id"]
+    ConfigHandler.set_value(key="calendarId", val=id)
 
 
 def clear_calendar(service: Resource, calendar_id: str) -> None:
@@ -84,19 +50,6 @@ def clear_calendar(service: Resource, calendar_id: str) -> None:
         batch.add(service.events().delete(calendarId=calendar_id, eventId=eId))
 
     batch.execute()
-
-
-def cb_insert_event(request_id, response, e) -> None:
-    """Callback from adding events"""
-
-    global discord_integration
-    if discord_integration == "y":
-        if e:
-            global error_set
-            global error_count
-
-            error_set.add(str(e))
-            error_count += 1
 
 
 def creds() -> Resource:

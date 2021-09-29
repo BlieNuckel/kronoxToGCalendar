@@ -1,14 +1,10 @@
 import os.path
 from typing import List
-import urllib
-from configparser import ConfigParser
 import webbrowser
+from utils.config_handler import ConfigHandler
 
-from O365.calendar import Schedule
-from O365.calendar import Calendar
 from gui import get_token_url
 import datetime
-import ssl
 from O365 import MSGraphProtocol
 from O365.connection import Connection
 from O365.account import Account
@@ -21,33 +17,15 @@ CONFIG_PATH = os.path.join(
     "config.ini",
 )
 
+config_handler = ConfigHandler()
 SCOPES = ["basic", "calendar_all"]
-
-
-def config_loader() -> tuple(str, str, str):
-    """Read and return values from config file."""
-
-    parser: ConfigParser = ConfigParser(allow_no_value=True)
-    parser.read(CONFIG_PATH)
-
-    calendar_name = parser["SETTINGS"]["calendarId"]
-    ical_url = parser["SETTINGS"]["icalURL"]
-    lang = parser["SETTINGS"]["LANGUAGE"]
-    myssl = ssl.create_default_context()
-    myssl.check_hostname = False
-    myssl.verify_mode = ssl.CERT_NONE
-    ical_file = (
-        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
-    )
-
-    return calendar_name, ical_file, lang
 
 
 def insert_event(events: List[str], account: Account, calendar_name: str) -> None:
     """Add events to calendar."""
 
-    schedule: Schedule = account.schedule()
-    calendar: Calendar = schedule.get_calendar(calendar_name=calendar_name)
+    schedule = account.schedule()
+    calendar = schedule.get_calendar(calendar_name=calendar_name)
 
     for event in events:
         new_event = calendar.new_event()
@@ -60,6 +38,15 @@ def insert_event(events: List[str], account: Account, calendar_name: str) -> Non
         except KeyError:
             pass
         new_event.save()
+
+
+def create_default_calendar(account: Account) -> None:
+    """Create CLASSES calendar and save ID in config."""
+    schedule = account.schedule()
+    calendar = schedule.new_calendar("CLASSES")
+
+    id = calendar.calendar_id
+    ConfigHandler.set_value(key="calendarId", val=id)
 
 
 def clear_calendar(account: Account, calendar_name: str) -> None:
