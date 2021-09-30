@@ -2,7 +2,7 @@
 
 The scripts function is to import any kronox schedule into a Google Calendar. When the script is run, it will only sync classes _once_ and as such it must be run periodically, either automatically or manually to ensure that all data is up to date.
 
-The first time the script is run it generates a config file based on several user inputs. Besides this the first run will also generate a Google authentication token, where the scripts will request access to the relevant Google account's calendars.
+The first time the script is run it generates a config file based on several user inputs. Besides this the first run will also generate a Google or Outlook authentication token, where the scripts will request access to the relevant calendars.
 
 # Privacy Notice
 
@@ -11,14 +11,6 @@ The first time the script is run it generates a config file based on several use
 # Setup
 
 During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORTANT TO READ BEFORE USING THE SCRIPT**
-
-## Google Calendar ID / Outlook Calendar Name
-
-This is the ID that Google uses to know which calendar to modify and add the classes to. This can be found under the settings for a calendar in Google Calendar.
-
-In the case of Outlook the script accesses the calendar by its name. This option is case sensitive and only one calendar in your outlook should have the name.
-
-**IMPORTANT: Create a new calendar for the script to import into. The script deletes _all_ events before adding to avoid duplicates and as such the calendar tied to the script should _only_ be used for the script.**
 
 ## Kronox iCal file URL
 
@@ -36,13 +28,7 @@ For the HKR computer science class, below are your schedule links. You will stil
 
 This setting helps filter between Swedish and English classes. Due to the way some courses have been added to Kronox both English and Swedish classes are visible to everyone. This option allows you to select whether you want to see all classes, only English classes, or only Swedish Classes.
 
-**IMPORTANT: As this removes some classes from the schedule based on a hardcoded filter, which may not perfectly apply to all classes (depending on the teacher's naming etc.) there is a risk that this will filter out important classes/events from your schedule. A safety has been added to ensure that if the event includes "tenta" or "exam" it will _never_ be removed, but beware that there is still a risk in using it.**
-
-## Discord Webhook 
-
-This setting allows you to choose whether you wish to connect a Discord Webhook to the script, that sends update messages every time the script is run. The messages specify whether the call to Google's API was successful.
-
-If this option is enabled you will be asked to enter your personal webhook's URL. You can follow this link for a simple guide on setting up a webhook: [Webhook setup](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)
+**IMPORTANT: As this removes some classes from the schedule based on a hardcoded filter, which may not perfectly apply to all classes (depending on the teacher's naming etc.) there is a risk that this will filter out important classes/events from your schedule. A safety has been added to ensure that if the event includes "tenta" or "exam" it will _never_ be removed, but beware that there is still a small risk in using it.**
 
 ## Google Login
 
@@ -53,27 +39,19 @@ To move on and give the script access,   follow these steps:
 1. Select the google account you wish to connect to
 2. Click "advanced" in the bottom left of the warning message
 3. Click "Go to KronoxToGCal (unsafe)"
-4. Check off the checkbox giving the script access to editing your calendar
+4. Check off the checkboxes giving the script access to editing your calendar
 5. Click "Allow"
 6. Close the browser window when it goes white, with a success message in the top left
 
-After this the events should be added to the calendar specified in the setup process.
+After this the events should be added to your calendar.
 
-**IMPORTANT: The script does _not_ access anything other than the one calendar you specify by the calendar ID and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed.**
-
-## Run Script On Startup
-
-This option is recommended, and is required to ensure the schedule stays up to date. Without it, you must manually run the script through the run file to make sure the calendars stay up to date. You can always remove the automatic updates by running the 'remove_startup' file in the installed directory.
+**IMPORTANT: The script does _not_ access anything other than the one calendar it creates and as such is safe to use. All login information and authentication is _only_ stored locally in the directory where the script is placed.**
 
 # Trouble Shooting
 
 ## General issues and fix
 
 Most issues stem from an incomplete config.ini file. The file can be found in <install-dir>/kronoxToGCalendar/config.ini. Deleting this and running the script will prompt a new setup. Make sure to fill in the settings correctly and then most issues should be fixed.
-
-## Only a few days of schedule gets transferred to Google Calendar
-  
-This issue may be a result of the kronox link inserted. Due to kronox' databases, there seem to be multiple ways to access them. To find a link that should work as intended go to [kronoX](https://kronox.hkr.se/) and search for your course code's schedule. Make sure the dates are left as starting today and going ahead 6 months.
 
 # Cloud Service
 
