@@ -16,13 +16,7 @@ During the setup there are a set of options. **THE FOLLOWING SECTIONS ARE IMPORT
 
 This is the URL for the download of the calendar information that can be found on the schedule site on [Kronox](https://kronox.hkr.se/). It can be found in the top left of the schedule and is labeled "Hämta iCal fil"/"Get iCal file." Make sure to copy the URL by right-clicking and choosing "Copy link" instead of downloading the file manually.
 
-For the HKR computer science class, below are your schedule links. You will still have to copy the link from the "Get iCal file" button as mentioned above:
-
-[1st year Swedish](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TGDU3+2021+35+100+NML+sv)
-
-[1st year English](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2021+35+100+NML+en)
-
-[2nd year English](https://kronox.hkr.se/setup/jsp/Schema.jsp?startDatum=idag&intervallTyp=m&intervallAntal=6&sprak=SV&sokMedAND=true&forklaringar=true&resurser=p.TBSE2+2020+36+100+NML+en)
+For the HKR computer science classes, there is a built in drop down box that will automatically use the correct URL depending on what class you choose.
 
 ## Language
 
