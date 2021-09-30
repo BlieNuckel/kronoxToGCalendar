@@ -1,9 +1,10 @@
 import os.path
 from typing import List
 import webbrowser
+
+import requests
 import utils.config_handler as config_handler
 
-from gui import get_token_url
 import datetime
 from O365 import MSGraphProtocol
 from O365.connection import Connection
@@ -93,14 +94,31 @@ def creds() -> Account:
         print("AUTH TRIGGERED")
         auth_url = connection.get_authorization_url(
             requested_scopes=scopes,
+            redirect_uri="https://kronox-client-api.herokuapp.com/return_token_url",
         )
 
         webbrowser.open_new(auth_url[0])
 
-        app = get_token_url.Application()
-        app.mainloop()
+        token_req = lambda: requests.get(
+            "https://kronox-client-api.herokuapp.com/get_token_url"
+        )
 
-        token_url = app.token_url
+        while token_req().text == "None":
+            continue
+
+        token_res_arr = token_req().text.split("&")
+        print(token_res_arr)
+        token_code = token_res_arr[0].split("?")[1][5:]
+        token_state = token_res_arr[1][6:]
+
+        token_url = (
+            "https://login.microsoftonline.com/common/oauth2/nativeclient?code="
+            + token_code
+            + "&state="
+            + token_state
+        )
+
+        print(token_url)
 
         connection.request_token(token_url)
 

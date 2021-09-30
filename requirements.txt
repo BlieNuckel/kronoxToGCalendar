@@ -12,3 +12,4 @@ python-dateutil
 tzlocal
 pytz
 O365
+flask
