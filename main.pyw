@@ -6,8 +6,8 @@ from utils.enums import Platform
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
-# if not os.path.isfile(CONFIG_PATH):
-#     subprocess.call('"batch/install_requirements.bat"')
+if not os.path.isfile(CONFIG_PATH):
+    subprocess.call('"batch/install_requirements.bat"')
 
 from logic import outlook_connector
 from logic import google_connector

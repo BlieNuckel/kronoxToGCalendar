@@ -118,8 +118,6 @@ def creds() -> Account:
             + token_state
         )
 
-        print(token_url)
-
         connection.request_token(token_url)
 
     print("AUTH PASSED")
