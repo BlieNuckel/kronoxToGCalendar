@@ -1,14 +1,11 @@
 import os.path
 from typing import List
-import urllib
-from configparser import ConfigParser
 import webbrowser
 
-from O365.calendar import Schedule
-from O365.calendar import Calendar
-from gui import get_token_url
+import requests
+import utils.config_handler as config_handler
+
 import datetime
-import ssl
 from O365 import MSGraphProtocol
 from O365.connection import Connection
 from O365.account import Account
@@ -24,30 +21,11 @@ CONFIG_PATH = os.path.join(
 SCOPES = ["basic", "calendar_all"]
 
 
-def config_loader() -> tuple[str, str, str]:
-    """Read and return values from config file."""
-
-    parser: ConfigParser = ConfigParser(allow_no_value=True)
-    parser.read(CONFIG_PATH)
-
-    calendar_name = parser["SETTINGS"]["calendarId"]
-    ical_url = parser["SETTINGS"]["icalURL"]
-    lang = parser["SETTINGS"]["LANGUAGE"]
-    myssl = ssl.create_default_context()
-    myssl.check_hostname = False
-    myssl.verify_mode = ssl.CERT_NONE
-    ical_file = (
-        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
-    )
-
-    return calendar_name, ical_file, lang
-
-
-def insert_event(events: List[str], account: Account, calendar_name: str) -> None:
+def insert_event(events: List[str], account: Account, calendar_id: str) -> None:
     """Add events to calendar."""
 
-    schedule: Schedule = account.schedule()
-    calendar: Calendar = schedule.get_calendar(calendar_name=calendar_name)
+    schedule = account.schedule()
+    calendar = schedule.get_calendar(calendar_id=calendar_id)
 
     for event in events:
         new_event = calendar.new_event()
@@ -62,11 +40,20 @@ def insert_event(events: List[str], account: Account, calendar_name: str) -> Non
         new_event.save()
 
 
-def clear_calendar(account: Account, calendar_name: str) -> None:
+def create_default_calendar(account: Account) -> None:
+    """Create CLASSES calendar and save ID in config."""
+    schedule = account.schedule()
+    calendar = schedule.new_calendar("CLASSES")
+
+    id = calendar.calendar_id
+    config_handler.set_value(key="calendarId", val=id)
+
+
+def clear_calendar(account: Account, calendar_id: str) -> None:
     """Get current available events and delete them."""
 
     schedule = account.schedule()
-    calendar = schedule.get_calendar(calendar_name=calendar_name)
+    calendar = schedule.get_calendar(calendar_id=calendar_id)
 
     today = datetime.date.today()
     yesterday = today - datetime.timedelta(days=1)
@@ -107,14 +94,29 @@ def creds() -> Account:
         print("AUTH TRIGGERED")
         auth_url = connection.get_authorization_url(
             requested_scopes=scopes,
+            redirect_uri="https://kronox-client-api.herokuapp.com/return_token_url",
         )
 
         webbrowser.open_new(auth_url[0])
 
-        app = get_token_url.Application()
-        app.mainloop()
+        token_req = lambda: requests.get(
+            "https://kronox-client-api.herokuapp.com/get_token_url"
+        )
 
-        token_url = app.token_url
+        while token_req().text == "None":
+            continue
+
+        token_res_arr = token_req().text.split("&")
+        print(token_res_arr)
+        token_code = token_res_arr[0].split("?")[1][5:]
+        token_state = token_res_arr[1][6:]
+
+        token_url = (
+            "https://login.microsoftonline.com/common/oauth2/nativeclient?code="
+            + token_code
+            + "&state="
+            + token_state
+        )
 
         connection.request_token(token_url)
 

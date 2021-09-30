@@ -1,5 +1,6 @@
 calendar.ics
 token.pickle
+o365_token.txt
 googleAPI.py
 config.ini
 kronoxToGCalendar.zip

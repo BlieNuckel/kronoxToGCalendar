@@ -1,8 +1,8 @@
-from configparser import ConfigParser
 import os
 import subprocess
+import utils.config_handler as config_handler
 import gui.main_gui
-from enum import Enum
+from utils.enums import Platform
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config.ini")
 
@@ -14,41 +14,30 @@ from logic import google_connector
 from logic import event_handler
 
 
-class Platform(Enum):
-    """Defines different possible calendar platforms."""
-
-    OUTLOOK = "outlook"
-    GOOGLE = "google"
-
-
 def main():
     """Get config, initiate for chosen platform."""
 
-    parser = config_check()
-    platform: Platform = parser["SETTINGS"]["platform"]
-    run_platform(platform)
-
-
-def config_check() -> ConfigParser:
-    """Check for and read config file else run gui."""
-
-    parser = ConfigParser(allow_no_value=True)
-
-    if os.path.isfile(CONFIG_PATH):
-        parser.read(CONFIG_PATH)
-    else:
+    init_run = False
+    if config_handler.check_config() is None:
+        init_run = True
         gui.main_gui.run()
-        parser.read(CONFIG_PATH)
-    return parser
+
+    platform = config_handler.get_value("platform")
+    run_platform(platform, init_run)
 
 
-def run_platform(platform: Platform) -> None:
+def run_platform(platform: str, init_run: bool) -> None:
     """Run flow dependent on platform."""
 
-    if platform == Platform.OUTLOOK:
-        (calendar_id, ical_file, lang) = outlook_connector.config_loader()
+    if platform == Platform.OUTLOOK.value:
+        (ical_file, lang) = config_handler.load_config()
 
         account = outlook_connector.creds()
+
+        if init_run:
+            outlook_connector.create_default_calendar(account)
+
+        calendar_id = config_handler.get_value("calendarId")
         event_list = event_handler.parse_ics(ical_file)
         parsed_event_list = event_handler.event_edit(event_list, lang)
 
@@ -56,23 +45,20 @@ def run_platform(platform: Platform) -> None:
 
         outlook_connector.insert_event(parsed_event_list, account, calendar_id)
 
-    elif platform == Platform.GOOGLE:
-        (
-            calendar_id,
-            ical_file,
-            lang,
-            webhook_url,
-        ) = google_connector.config_loader()
+    elif platform == Platform.GOOGLE.value:
+        (ical_file, lang) = config_handler.load_config()
 
         service = google_connector.creds()
+        if init_run:
+            google_connector.create_default_calendar(service)
+
+        calendar_id = config_handler.get_value("calendarId")
         event_list = event_handler.parse_ics(ical_file)
         parsed_event_list = event_handler.event_edit(event_list, lang)
 
         google_connector.clear_calendar(service, calendar_id)
 
-        google_connector.insert_event(
-            parsed_event_list, service, calendar_id, webhook_url
-        )
+        google_connector.insert_event(parsed_event_list, service, calendar_id)
 
 
 if __name__ == "__main__":
