@@ -2,6 +2,7 @@ from configparser import ConfigParser
 import os
 import ssl
 import urllib.request
+import urllib.error
 from utils.enums import Platform
 
 CONFIG_PATH = os.path.join(
@@ -31,9 +32,15 @@ def load_config() -> tuple[str, str, str]:
     myssl = ssl.create_default_context()
     myssl.check_hostname = False
     myssl.verify_mode = ssl.CERT_NONE
-    ical_file = (
-        urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
-    )
+    try:
+        ical_file = (
+            urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+        )
+    except urllib.error.URLError:
+        ical_url[8:14] = ["s", "c", "h", "e", "m", "a"]
+        ical_file = (
+            urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
+        )
 
     return ical_file, lang
 
