@@ -37,7 +37,7 @@ def load_config() -> tuple[str, str, str]:
             urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
         )
     except urllib.error.URLError:
-        ical_url[8:14] = ["s", "c", "h", "e", "m", "a"]
+        ical_url[8:14] = "schema"
         ical_file = (
             urllib.request.urlopen(ical_url, context=myssl).read().decode("utf-8")
         )
